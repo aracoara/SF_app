@@ -24,8 +24,8 @@
 
 - [ ] Backend
     - [X] Arquivo Python principal (app.py) para a lógica do servidor Flask.
-    - [ ] Pasta para modelos do banco de dados SQLite.
-    - [ ] Pasta para rotas do Flask que lidam com requisições e respostas HTTP.
+    - [X] Pasta para modelos do banco de dados SQLite.
+    - [X] Pasta para rotas do Flask que lidam com requisições e respostas HTTP.
 - [ ] Frontend
     - [ ] Arquivos HTML para as páginas da interface do usuário.
     - [ ] Arquivos CSS para estilização.
@@ -49,9 +49,9 @@
     - [ ] Torneios
     - [ ] Jogos
     - [ ] Jogadores
-- [ ] Configurar a conexão com o banco de dados SQLite.
+- [X] Configurar a conexão com o banco de dados SQLite.
 - [ ] Front-end:
-    - [ ] Criar páginas básicas em HTML.
+    - [X] Criar páginas básicas em HTML.
     - [ ] Adicionar estilos CSS.
     - [ ] Implementar funcionalidades básicas em JavaScript.
 - [ ] Testes:
