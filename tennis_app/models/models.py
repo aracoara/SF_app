@@ -11,6 +11,14 @@ class Player(db.Model):
     country = db.Column(db.String(3))  # Código do país ISO Alpha-3
     ranking = db.Column(db.Integer)    # Ranking do jogador
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "country": self.country,
+            "ranking": self.ranking
+        }
+
     def __repr__(self):
         # Método de representação do objeto para facilitar a depuração e o log
         return f'<Player {self.name}, Country: {self.country}, Ranking: {self.ranking}>'

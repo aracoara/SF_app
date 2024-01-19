@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Players</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .player-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .player-table th, .player-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .player-table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .player-cell {
+            display: flex;
+            gap: 10px; /* Adiciona espaço entre o nome, país e ranking */
+            align-items: center; /* Centraliza os itens verticalmente */
+        }
+        .player-name {
+            font-weight: bold;
+        }
+        .player-country,
+        .player-ranking {
+            font-size: 0.9em;
+        }
+        .player-ranking {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h2>Tennis Players</h2>
+    <table class="player-table">
+        <thead>
+            <tr>
+                <th>Players</th>
+            </tr>
+        </thead>
+        <tbody id="playersTable">
+            <!-- Players will be loaded here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/players')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('playersTable');
+                    data.forEach(player => {
+                        const row = tableBody.insertRow();
+                        const cell = row.insertCell(0);
+                        cell.innerHTML = `
+                            <select class="player-select" name="playerSelect">
+                                <option value="${player.id}">${player.name} (${player.country}) [${player.ranking}]</option>
+                            </select>
+                        `;
+                    });
+                })
+                .catch(error => console.error('Error fetching players:', error));
+        });
+    </script>
+</body>
+</html>
