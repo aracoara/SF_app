@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarters Final Picks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 300px; /* Ajuste a largura conforme necessário */
+            margin: auto;
+            overflow: hidden;
+        }
+        h2 {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .player-select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .player-table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .player-table th, .player-table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+            background-color: #ffffff;
+        }
+        th {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Quarters Final Picks</h2>
+        <form id="quartersFinalPicksForm">
+            <table class="player-table">
+                <tbody id="playersTable">
+                    <!-- As células da tabela serão preenchidas pelo JavaScript abaixo -->
+                </tbody>
+            </table>
+            <button type="submit">Enviar Escolhas</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableBody = document.getElementById('playersTable');
+            for (let i = 1; i <= 8; i++) {
+                let row = tableBody.insertRow();
+                let headerCell = row.insertCell();
+                headerCell.textContent = `QF ${i}`;
+                headerCell.className = 'qf-header';
+                let selectCell = row.insertCell();
+                let select = document.createElement('select');
+                select.className = 'player-select';
+                select.name = `playerSelectQF${i}`;
+                selectCell.appendChild(select);
+                fetch(`/players/qf/${i}`) 
+                    .then(response => response.json())
+                    .then(players => {
+                        players.forEach(player => {
+                            let option = document.createElement('option');
+                            option.value = player.id;
+                            option.textContent = `${player.name} (${player.country || ''}) [${player.ranking || ''}]`;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error(`Error fetching players for QF ${i}:`, error));
+            }
+
+            // Adiciona o evento de submit ao formulário
+            document.getElementById('quartersFinalPicksForm').onsubmit = function(event) {
+                event.preventDefault();
+                let formData = new FormData(event.target);
+                let data = {};
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                fetch('/submit-quarter-finals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Escolhas enviadas com sucesso!');
+                })
+                .catch(error => {
+                    console.error('Erro ao enviar escolhas:', error);
+                });
+            };
+        });
+    </script>
+</body>
+</html>

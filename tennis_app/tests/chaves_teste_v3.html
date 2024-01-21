@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Torneio de Tênis</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-around; /* Espaçamento uniforme entre as colunas */
+            align-items: flex-start; /* Alinha as colunas ao topo */
+            padding: 20px; /* Espaçamento ao redor do container */
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cell {
+            min-width: 100px; /* Largura mínima para manter uma aparência consistente */
+            height: auto; /* Altura automática para se ajustar ao conteúdo */
+            border: 1px solid black;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px; /* Espaçamento interno para dar espaço ao redor do texto */
+            word-wrap: break-word; /* Quebra de texto para evitar overflow */
+}
+        .cell select {
+            width: 100%; /* Largura do dropdown para preencher a célula */
+            box-sizing: border-box; /* Inclui padding e borda na largura total */
+        }
+        h2 {
+            margin-bottom: 15px; /* Espaçamento abaixo do título de cada coluna */
+        }
+        /* Estilos adicionais podem ser adicionados conforme necessário */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="column">
+            <h2>Quartas de Final</h2>
+            <!-- Adicionando atributo 'name' aos elementos select -->
+            <div class="cell" id="QF1"><select name="QF1"></select></div>
+            <div class="cell" id="QF2"><select name="QF2"></select></div>
+            <div class="cell" id="QF3"><select name="QF3"></select></div>
+            <div class="cell" id="QF4"><select name="QF4"></select></div>
+            <div class="cell" id="QF5"><select name="QF5"></select></div>
+            <div class="cell" id="QF6"><select name="QF6"></select></div>
+            <div class="cell" id="QF7"><select name="QF7"></select></div>
+            <div class="cell" id="QF8"><select name="QF8"></select></div>
+        </div>
+        <div class="column">
+            <h2>Semifinais</h2>
+            <!-- Adicionando atributo 'name' aos elementos select -->
+            <div class="cell" id="SF1"><select name="SF1"></select></div>
+            <div class="cell" id="SF2"><select name="SF2"></select></div>
+            <div class="cell" id="SF3"><select name="SF4"></select></div>
+            <div class="cell" id="SF4"><select name="SF4"></select></div>
+        </div>
+        <div class="column">
+            <h2>Final</h2>
+            <!-- Adicionando atributo 'name' aos elementos select -->
+            <div class="cell" id="F1"><select name="F1"></select></div>
+            <div class="cell" id="F2"><select name="F2"></select></div>
+        </div>
+        <!-- Coluna do Campeão, se necessário, pode ser adicionada aqui -->
+        <div class="column">
+            <h2>Campeão</h2>
+            <div class="cell" id="Champ"><select name="Champ"></select></div>
+            <button id="submitPicks">Enviar Palpites</button>
+        </div>
+    </div>
+
+    <script>
+        const playersData = {
+            1: [{"name": "Novak Djokovic", "country": "SRB", "ranking": 1}, {"name": "Ben Shelton", "country": "USA", "ranking": 16, "qf_number": 1}],
+            2: [{"name": "Taylor Fritz", "country": "USA", "ranking": 12}, {"name": "Stefanos Tsitsipas", "country": "GRE", "ranking": 7, "qf_number": 2}],
+            3: [{"name": "Jannik Sinner", "country": "ITA", "ranking": 4}, {"name": "Karen Khachanov", "country": "RUS", "ranking": 15, "qf_number": 3}],
+            4: [{"name": "Alex de Minaur", "country": "AUS", "ranking": 10}, {"name": "Andrey Rublev", "country": "RUS", "ranking": 5, "qf_number": 4}],
+            5: [{"name": "Holger Rune", "country": "DEN", "ranking": 8}, {"name": "Hubert Hurkacz", "country": "POL", "ranking": 9, "qf_number": 5}],
+            6: [{"name": "Grigor Dimitrov", "country": "BUL", "ranking": 13}, {"name": "Daniil Medvedev", "country": "RUS", "ranking": 3, "qf_number": 6}],
+            7: [{"name": "Alexander Zverev", "country": "GER", "ranking": 6}, {"name": "Casper Ruud", "country": "NOR", "ranking": 11, "qf_number": 7}],
+            8: [{"name": "Tommy Paul", "country": "USA", "ranking": 14}, {"name": "Carlos Alcaraz", "country": "ESP", "ranking": 2, "qf_number": 8}]
+        };
+        // explique
+        function populateQFSelectors() {
+            for (let qfNumber = 1; qfNumber <= 8; qfNumber++) {
+                const select = document.querySelector(`#QF${qfNumber} select`);
+                playersData[qfNumber].forEach(player => {
+                    const option = document.createElement('option');
+                    option.textContent = `${player.name} (${player.country}) - Ranking ${player.ranking}`;
+                    select.appendChild(option);
+                });
+            }
+            populateSFSelectors(); // Chamar a função para atualizar os seletores de SF
+        }
+
+        function populateSFSelectors() {
+            // Mapeamento dos QFs para os SFs
+            const qfToSfMapping = {
+                'SF1': ['QF1', 'QF2'],
+                'SF2': ['QF3', 'QF4'],
+                'SF3': ['QF5', 'QF6'],
+                'SF4': ['QF7', 'QF8']
+            };
+
+            Object.entries(qfToSfMapping).forEach(([sf, qfs]) => {
+                const sfSelect = document.querySelector(`#${sf} select`);
+                sfSelect.innerHTML = ''; // Limpar opções anteriores
+
+                let allQFsSelected = true; // Variável para verificar se todos os QFs foram selecionados
+
+                qfs.forEach(qf => {
+                    const qfSelect = document.querySelector(`#${qf} select`);
+                    const selectedPlayer = qfSelect.options[qfSelect.selectedIndex].textContent;
+
+                    if (selectedPlayer !== '') {
+                        const option = document.createElement('option');
+                        option.textContent = selectedPlayer;
+                        sfSelect.appendChild(option);
+                    } else {
+                        allQFsSelected = false; // Se algum QF não foi selecionado, definir a variável como false
+                    }
+                });
+
+                if (!allQFsSelected) {
+                    sfSelect.selectedIndex = 0; // Limpar a seleção do SF se nem todos os QFs foram selecionados
+                }
+            });
+            console.log('SF selectors populated'); // Mensagem de depuração
+            populateFSelectors(); // Chamar a função para atualizar os seletores de Final
+        }
+
+        // Adicionando EventListeners aos QF selects
+        for (let qfNumber = 1; qfNumber <= 8; qfNumber++) {
+            const select = document.querySelector(`#QF${qfNumber} select`);
+            select.addEventListener('change', populateSFSelectors);
+        }
+
+        // Função para popular os seletores de Final
+        function populateFSelectors() {
+            // Mapeamento dos SFs para os Fs
+            const sfToFMapping = {
+                'F1': ['SF1', 'SF2'],
+                'F2': ['SF3', 'SF4']
+            };
+
+            Object.entries(sfToFMapping).forEach(([f, sfs]) => {
+                const fSelect = document.querySelector(`#${f} select`);
+                fSelect.innerHTML = ''; // Limpar opções anteriores
+
+                let allSFsSelected = true; // Variável para verificar se todos os SFs foram selecionados
+
+                sfs.forEach(sf => {
+                    const sfSelect = document.querySelector(`#${sf} select`);
+                    const selectedPlayer = sfSelect.options[sfSelect.selectedIndex].textContent;
+
+                    if (selectedPlayer !== '') {
+                        const option = document.createElement('option');
+                        option.textContent = selectedPlayer;
+                        fSelect.appendChild(option);
+                    } else {
+                        allSFsSelected = false; // Se algum SF não foi selecionado, definir a variável como false
+                    }
+                });
+
+                if (!allSFsSelected) {
+                    fSelect.selectedIndex = 0; // Limpar a seleção do F se nem todos os SFs foram selecionados
+                }
+            });
+            console.log('F selectors populated'); // Mensagem de depuração
+            populateChampionSelector(); // Chamar a função para atualizar o seletor de Campeão
+        }
+
+        // Adicionando EventListeners aos SF selects
+        for (let sfNumber = 1; sfNumber <= 4; sfNumber++) {
+            const select = document.querySelector(`#SF${sfNumber} select`);
+            if (select) {
+                select.addEventListener('change', populateFSelectors);
+                console.log(`EventListener added to SF${sfNumber}`); // Mensagem de depuração
+            } else {
+                console.log(`SF${sfNumber} select not found`); // Mensagem de erro se o select não for encontrado
+            }
+        }
+
+        // Função para popular o seletor do Campeão
+        function populateChampionSelector() {
+            const champSelect = document.querySelector('#Champ select');
+            champSelect.innerHTML = ''; // Limpar opções anteriores
+
+            let allFsSelected = true; // Variável para verificar se todos os Fs foram selecionados
+
+            const f1Select = document.querySelector('#F1 select');
+            const f2Select = document.querySelector('#F2 select');
+            
+            [f1Select, f2Select].forEach(select => {
+                const selectedPlayer = select.options[select.selectedIndex].textContent;
+
+                if (selectedPlayer !== '') {
+                    const option = document.createElement('option');
+                    option.textContent = selectedPlayer;
+                    champSelect.appendChild(option);
+                } else {
+                    allFsSelected = false; // Se algum F não foi selecionado, definir a variável como false
+                }
+            });
+
+            if (!allFsSelected) {
+                champSelect.selectedIndex = 0; // Limpar a seleção do Campeão se nem todos os Fs foram selecionados
+            }
+        }
+
+        // Adicionando EventListeners aos F selects
+        ['F1', 'F2'].forEach(fId => {
+            const select = document.querySelector(`#${fId} select`);
+            if (select) {
+                select.addEventListener('change', populateChampionSelector);
+            }
+        });
+
+        // Inicialização das funções
+        populateQFSelectors();
+    </script>
+
+    <script>
+        document.getElementById('submitPicks').addEventListener('click', function() {
+            let torneio = {
+                quartasFinal: {},
+                semiFinal: {},
+                final: {},
+                campeao: {}
+            };
+
+            // Quartas de Final
+            for (let i = 1; i <= 8; i++) {
+                let select = document.querySelector(`#QF${i} select`);
+                torneio.quartasFinal[`QF${i}`] = select ? select.value : null;
+            }
+
+            // Semifinais
+            for (let i = 1; i <= 4; i++) {
+                let select = document.querySelector(`#SF${i} select`);
+                torneio.semiFinal[`SF${i}`] = select ? select.value : null;
+            }
+
+            // Final
+            for (let i = 1; i <= 2; i++) {
+                let select = document.querySelector(`#F${i} select`);
+                torneio.final[`F${i}`] = select ? select.value : null;
+            }
+
+            // Campeão
+            let champSelect = document.querySelector('#Champ select');
+            torneio.campeao = champSelect ? champSelect.value : null;
+
+            // Convertendo o objeto para JSON
+            let json = JSON.stringify(torneio);
+
+            // Enviando o JSON para o servidor
+            fetch('/submit_picks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: json
+            }).then(response => {
+                if (response.ok) {
+                    console.log("Palpites enviados com sucesso!");
+                    return response.json();
+                } else {
+                    throw new Error('Falha ao enviar palpites');
+                }
+            }).then(data => {
+                console.log(data); // Trate a resposta do servidor aqui
+            }).catch(error => {
+                console.error(error);
+            });
+        });
+
+    </script>
+</body>
+</html>

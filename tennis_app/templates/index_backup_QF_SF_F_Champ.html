@@ -55,7 +55,7 @@
             <!-- Adicionando atributo 'name' aos elementos select -->
             <div class="cell" id="SF1"><select name="SF1"></select></div>
             <div class="cell" id="SF2"><select name="SF2"></select></div>
-            <div class="cell" id="SF3"><select name="SF3"></select></div>
+            <div class="cell" id="SF3"><select name="SF4"></select></div>
             <div class="cell" id="SF4"><select name="SF4"></select></div>
         </div>
         <div class="column">
@@ -72,8 +72,11 @@
         </div>
     </div>
 
-    <script>                          
-        // Função para buscar os jogadores
+    <script>
+                            
+        // A função getPlayers() é usada para buscar dados de jogadores de uma API através de uma solicitação HTTP GET para a rota '/players'. 
+        // Ela então passa os dados recebidos para a função populateQFSelectors(data), 
+        // ou registra um erro no console se a solicitação falhar.
         function getPlayers() {
             fetch('/players')
                 .then(response => response.json())
@@ -89,7 +92,8 @@
 
         // Função para popular os seletores de Quartas de Final
         function populateQFSelectors(players) {
-            // Este trecho de código percorre os jogadores e os organiza em um objeto com base no número da quartas de final (qf_number).
+            // Primeiro, os dados dos jogadores são reestruturados em um objeto onde as chaves são os números das quartas de final (qf_number) 
+            // e os valores são arrays dos jogadores nessa quartas de final.
             let playersData = players.reduce((acc, player) => {
                 if (player.qf_number) {
                     if (!acc[player.qf_number]) acc[player.qf_number] = [];
@@ -98,7 +102,8 @@
                 return acc;
             }, {});
 
-            // Este trecho de código percorre os seletores de quartas de final e adiciona as opções de jogadores a cada um.
+            // Este trecho de código percorre os números de 1 a 8, representando as quartas de final (QF), 
+            // e para cada QF, ele seleciona o elemento select correspondente na página HTML para futura manipulação.
             for (let qfNumber = 1; qfNumber <= 8; qfNumber++) {
                 const select = document.querySelector(`#QF${qfNumber} select`);
 
@@ -116,93 +121,117 @@
             }
         }
 
-        // Função para limpar os seletores de SF, F e Campeão
-        function clearSelectors() {
-            // Limpar SFs
-            for (let sfNumber = 1; sfNumber <= 4; sfNumber++) {
-                const sfSelect = document.querySelector(`#SF${sfNumber} select`);
-                sfSelect.innerHTML = '';
-                sfSelect.appendChild(new Option('Selecione os jogadores dos QFs', ''));
-            }
-
-            // Limpar Fs
-            ['F1', 'F2'].forEach(fId => {
-                const fSelect = document.querySelector(`#${fId} select`);
-                fSelect.innerHTML = '';
-                fSelect.appendChild(new Option('Selecione os jogadores das SFs', ''));
-            });
-
-            // Limpar Campeão
-            const champSelect = document.querySelector('#Champ select');
-            champSelect.innerHTML = '';
-            champSelect.appendChild(new Option('Selecione os jogadores das Finais', ''));
-        }
-
-        // Função para lidar com a mudança nos seletores de QF
-        function handleQFChange() {
-            updateSFSelectors();
-            clearSelectors();
-        }
-
-        // Adicionando EventListeners aos seletores de QF
-        document.addEventListener('DOMContentLoaded', () => {
-            for (let qfNumber = 1; qfNumber <= 8; qfNumber++) {
-                const qfSelect = document.querySelector(`#QF${qfNumber} select`);
-                qfSelect.addEventListener('change', handleQFChange);
-            }
-            getPlayers();
-        });
-
-        // Mapeamento dos QFs para os SFs
+        // Função para popular os seletores de Semifinal
+        function populateSFSelectors() {
+            // Mapeamento dos QFs para os SFs. Cada chave é um SF e o valor é um array dos QFs correspondentes.
             const qfToSfMapping = {
-            'SF1': ['QF1', 'QF2'],
-            'SF2': ['QF3', 'QF4'],
-            'SF3': ['QF5', 'QF6'],
-            'SF4': ['QF7', 'QF8']
-        };
+                'SF1': ['QF1', 'QF2'],
+                'SF2': ['QF3', 'QF4'],
+                'SF3': ['QF5', 'QF6'],
+                'SF4': ['QF7', 'QF8']
+            };
 
-        // Função para atualizar os seletores de SF com base nas seleções de QF
-        function updateSFSelectors() {
+            // Itera sobre cada entrada no mapeamento (um array com o SF e os QFs correspondentes)
             Object.entries(qfToSfMapping).forEach(([sf, qfs]) => {
+                // Seleciona o elemento select do SF atual
                 const sfSelect = document.querySelector(`#${sf} select`);
-                sfSelect.innerHTML = ''; // Limpar opções anteriores
+                sfSelect.innerHTML = ''; // Limpa as opções anteriores
 
-                let optionsAdded = false;
+                // Inicializa uma variável para verificar se todos os QFs foram selecionados
+                let allQFsSelected = true;
 
+                // Itera sobre cada QF correspondente ao SF atual
                 qfs.forEach(qf => {
+                    // Seleciona o elemento select do QF atual e obtém o jogador selecionado
                     const qfSelect = document.querySelector(`#${qf} select`);
-                    const selectedPlayerId = qfSelect.value;
+                    // const selectedPlayer = qfSelect.options[qfSelect.selectedIndex].textContent;
+                    const selectedPlayerId = qfSelect.options[qfSelect.selectedIndex].value;
 
-                    if (selectedPlayerId) {
-                        // Adicionando opção com base no jogador selecionado em QF
-                        const selectedOption = qfSelect.options[qfSelect.selectedIndex];
-                        const option = new Option(selectedOption.text, selectedOption.value);
+                    // Se um jogador foi selecionado, cria uma nova opção com o nome do jogador e a adiciona ao SF
+                    if (selectedPlayer !== '') {
+                        const option = document.createElement('option');
+                        option.textContent = selectedPlayer;
                         sfSelect.appendChild(option);
-                        optionsAdded = true;
+                    } else {
+                        // Se nenhum jogador foi selecionado, define allQFsSelected como false
+                        allQFsSelected = false;
                     }
                 });
 
-                if (!optionsAdded) {
-                    // Adicionar uma opção padrão se nenhum jogador for selecionado
-                    sfSelect.appendChild(new Option('Selecione os jogadores dos QFs', ''));
+                // Se todos os QFs foram selecionados, habilita o SF. Caso contrário, desabilita o SF.
+                if (allQFsSelected) {
+                    sfSelect.disabled = false;
+                } else {
+                    sfSelect.disabled = true;
                 }
             });
         }
 
-        // Adicionando EventListeners aos seletores de QF para atualizar os SFs
+        // Adicionando EventListeners aos QF selects
         document.addEventListener('DOMContentLoaded', () => {
             for (let qfNumber = 1; qfNumber <= 8; qfNumber++) {
-                const qfSelect = document.querySelector(`#QF${qfNumber} select`);
-                qfSelect.addEventListener('change', updateSFSelectors);
+                const select = document.querySelector(`#QF${qfNumber} select`);
+                select.addEventListener('change', populateSFSelectors);
             }
-
-            // Inicializar os dados dos jogadores nas QFs (exemplo: getPlayers() ou código similar)
-            // getPlayers();
         });
 
-        
+        // A função getPlayers() é usada para buscar dados de jogadores de uma API através de uma solicitação HTTP GET para a rota '/players'. 
+        // Ela então passa os dados recebidos para a função populateQFSelectors(data), 
+        // ou registra um erro no console se a solicitação falhar.
+        function getPlayers() {
+            fetch('/players')
+                .then(response => response.json())
+                .then(data => {
+                    populateQFSelectors(data); // Chama a função com os dados recebidos
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar jogadores:', error);
+                });
+        }
+
+        getPlayers(); // Chama getPlayers para iniciar o processo
+                
+        // Função para popular os seletores de Semifinal
+        function populateSFSelectors() {
+            // Mapeamento dos QFs para os SFs
+            const qfToSfMapping = {
+                'SF1': ['QF1', 'QF2'],
+                'SF2': ['QF3', 'QF4'],
+                'SF3': ['QF5', 'QF6'],
+                'SF4': ['QF7', 'QF8']
+            };
+
+            Object.entries(qfToSfMapping).forEach(([sf, qfs]) => {
+                const sfSelect = document.querySelector(`#${sf} select`);
+                sfSelect.innerHTML = ''; // Limpar opções anteriores
+
+                let allQFsSelected = true; // Variável para verificar se todos os QFs foram selecionados
+
+                qfs.forEach(qf => {
+                    const qfSelect = document.querySelector(`#${qf} select`);
+                    const selectedPlayer = qfSelect.options[qfSelect.selectedIndex].textContent;
+
+                    if (selectedPlayer !== '') {
+                        const option = document.createElement('option');
+                        option.textContent = selectedPlayer;
+                        sfSelect.appendChild(option);
+                    } else {
+                        allQFsSelected = false; // Se algum QF não foi selecionado, definir a variável como false
+                    }
+                });
+
+                if (!allQFsSelected) {
+                    sfSelect.selectedIndex = 0; // Limpar a seleção do SF se nem todos os QFs foram selecionados
+                }
+            });
+            console.log('SF selectors populated'); // Mensagem de depuração
+            populateFSelectors(); // Chamar a função para atualizar os seletores de Final
+        }
+
+
         // Função para popular os seletores de Final
         function populateFSelectors() {
+            // Mapeamento dos SFs para os Fs
             const sfToFMapping = {
                 'F1': ['SF1', 'SF2'],
                 'F2': ['SF3', 'SF4']
@@ -212,34 +241,75 @@
                 const fSelect = document.querySelector(`#${f} select`);
                 fSelect.innerHTML = ''; // Limpar opções anteriores
 
+                let allSFsSelected = true; // Variável para verificar se todos os SFs foram selecionados
+
                 sfs.forEach(sf => {
                     const sfSelect = document.querySelector(`#${sf} select`);
-                    const selectedPlayerId = sfSelect.value;
+                    const selectedPlayer = sfSelect.options[sfSelect.selectedIndex].textContent;
 
-                    if (selectedPlayerId) {
-                        const selectedOption = sfSelect.options[sfSelect.selectedIndex];
-                        const option = new Option(selectedOption.text, selectedOption.value);
+                    if (selectedPlayer !== '') {
+                        const option = document.createElement('option');
+                        option.textContent = selectedPlayer;
                         fSelect.appendChild(option);
+                    } else {
+                        allSFsSelected = false; // Se algum SF não foi selecionado, definir a variável como false
                     }
                 });
 
-                if (fSelect.options.length === 0) {
-                    // Adicionar uma opção padrão se nenhum jogador for selecionado
-                    fSelect.appendChild(new Option('Selecione os jogadores das SFs', ''));
+                if (!allSFsSelected) {
+                    fSelect.selectedIndex = 0; // Limpar a seleção do F se nem todos os SFs foram selecionados
                 }
             });
+            console.log('F selectors populated'); // Mensagem de depuração
+            populateChampionSelector(); // Chamar a função para atualizar o seletor de Campeão
         }
 
-        // Adicionando EventListeners aos seletores de SF para atualizar os Fs
-        document.addEventListener('DOMContentLoaded', () => {
-            for (let sfNumber = 1; sfNumber <= 4; sfNumber++) {
-                const sfSelect = document.querySelector(`#SF${sfNumber} select`);
-                sfSelect.addEventListener('change', populateFSelectors);
+        // Adicionando EventListeners aos SF selects
+        for (let sfNumber = 1; sfNumber <= 4; sfNumber++) {
+            const select = document.querySelector(`#SF${sfNumber} select`);
+            if (select) {
+                select.addEventListener('change', populateFSelectors);
+                console.log(`EventListener added to SF${sfNumber}`); // Mensagem de depuração
+            } else {
+                console.log(`SF${sfNumber} select not found`); // Mensagem de erro se o select não for encontrado
             }
-
-        });
+        }
 
         // Função para popular o seletor do Campeão
+        function populateChampionSelector() {
+            const champSelect = document.querySelector('#Champ select');
+            champSelect.innerHTML = ''; // Limpar opções anteriores
+
+            let allFsSelected = true; // Variável para verificar se todos os Fs foram selecionados
+
+            const f1Select = document.querySelector('#F1 select');
+            const f2Select = document.querySelector('#F2 select');
+            
+            [f1Select, f2Select].forEach(select => {
+                const selectedPlayer = select.options[select.selectedIndex].textContent;
+
+                if (selectedPlayer !== '') {
+                    const option = document.createElement('option');
+                    option.textContent = selectedPlayer;
+                    champSelect.appendChild(option);
+                } else {
+                    allFsSelected = false; // Se algum F não foi selecionado, definir a variável como false
+                }
+            });
+
+            if (!allFsSelected) {
+                champSelect.selectedIndex = 0; // Limpar a seleção do Campeão se nem todos os Fs foram selecionados
+            }
+        }
+
+        // Adicionando EventListeners aos F selects
+        ['F1', 'F2'].forEach(fId => {
+            const select = document.querySelector(`#${fId} select`);
+            if (select) {
+                select.addEventListener('change', populateChampionSelector);
+            }
+        });
+
         // Função para popular o seletor do Campeão
         function populateChampionSelector() {
             const champSelect = document.querySelector('#Champ select');
@@ -263,66 +333,55 @@
             }
         }
 
+// Adicionando EventListeners aos seletores de Final para atualizar o Campeão
+document.addEventListener('DOMContentLoaded', () => {
+    ['F1', 'F2'].forEach(fId => {
+        const select = document.querySelector(`#${fId} select`);
+        select.addEventListener('change', populateChampionSelector);
+    });
 
-        // Adicionando EventListeners aos seletores de Final para atualizar o Campeão
-        document.addEventListener('DOMContentLoaded', () => {
-            ['F1', 'F2'].forEach(fId => {
-                const select = document.querySelector(`#${fId} select`);
-                select.addEventListener('change', populateChampionSelector);
-            });
-        });
+    // Código existente para inicializar QFs, SFs...
+});
 
-
-        // Adicionando EventListeners aos seletores de Final para atualizar o Campeão
-        document.addEventListener('DOMContentLoaded', () => {
-            ['F1', 'F2'].forEach(fId => {
-                const select = document.querySelector(`#${fId} select`);
-                select.addEventListener('change', populateChampionSelector);
-            });
-
-        });
 
     </script>
 
     <script>
+        // Adicionando EventListener ao botão de envio
         document.getElementById('submitPicks').addEventListener('click', function() {
-            console.log('Botão clicado'); // Confirmação do clique
-
             let torneio = {
                 quartasFinal: {},
                 semiFinal: {},
                 final: {},
-                campeao: null
+                campeao: {}
             };
 
-            // Captura dos dados das Quartas de Final
+            // Quartas de Final
             for (let i = 1; i <= 8; i++) {
                 let select = document.querySelector(`#QF${i} select`);
                 torneio.quartasFinal[`QF${i}`] = select ? select.options[select.selectedIndex].value : null;
             }
 
-            // Captura dos dados das Semifinais
+            // Semifinais
             for (let i = 1; i <= 4; i++) {
                 let select = document.querySelector(`#SF${i} select`);
                 torneio.semiFinal[`SF${i}`] = select ? select.options[select.selectedIndex].value : null;
             }
 
-            // Captura dos dados das Finais
+            // Final
             for (let i = 1; i <= 2; i++) {
                 let select = document.querySelector(`#F${i} select`);
                 torneio.final[`F${i}`] = select ? select.options[select.selectedIndex].value : null;
             }
 
-            // Captura do Campeão
+            // Campeão
             let champSelect = document.querySelector('#Champ select');
             torneio.campeao = champSelect ? champSelect.options[champSelect.selectedIndex].value : null;
 
-            // Verifica o objeto torneio antes da conversão
-            console.log('Objeto torneio:', torneio);
-
-            // Convertendo para JSON
+            // Convertendo o objeto para JSON
             let json = JSON.stringify(torneio);
-            console.log('JSON enviado:', json);
+
+            console.log('JSON enviado:', json); // Exibe o JSON no console
 
             // Enviando o JSON para o servidor
             fetch('/submit_picks', {
@@ -344,8 +403,7 @@
                 console.error('Erro ao enviar:', error);
             });
         });
+
     </script>
-
-
 </body>
 </html>

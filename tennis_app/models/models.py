@@ -46,3 +46,25 @@ class Game(db.Model):
 
     def __repr__(self):
         return f'<Game {self.id} - Round: {self.round.name}, Player 1: {self.player1_id}, Player 2: {self.player2_id}, Winner: {self.winner_id}>'    
+
+class Picks(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    picks_data = db.Column(db.JSON)  # Armazena as escolhas no formato JSON
+
+    def __repr__(self):
+        return f'<Picks {self.id} - User: {self.user_id}>'
+
+    
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    picks = db.relationship('Picks', backref='user', lazy='dynamic')
+
+    def __repr__(self):
+        return f'<User {self.username}>'
+
+## Para atualizar o banco de dados, execute os seguintes comandos no terminal:
+# $env:FLASK_APP = "D:\TENIS\SF_app\tennis_app"
+# flask db migrate -m "Descrever a migração"
+# flask db upgrade

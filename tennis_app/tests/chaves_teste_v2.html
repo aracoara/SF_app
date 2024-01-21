@@ -1,0 +1,183 @@
+
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Torneio de Tênis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+        .rounds-container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 30px;
+        }
+        .round label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 5px;
+        }
+        .qf-container, .sf-container, .final-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 20px;
+        }
+        .round-header {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .sf-container {
+            margin-top: 70px;
+            margin-bottom: 60px;
+        }
+        .final-container {
+            margin-left: 30px;
+        }
+        /* Estilos adicionais podem ser adicionados abaixo */
+    </style>
+</head>
+<body>
+    <div class="rounds-container">
+        <div class="qf-container" id="qfSelections">
+            <h2 class="round-header">Quartas de Final</h2>
+            <!-- Seleções de QF serão inseridas aqui -->
+        </div>
+        <div class="sf-container" id="sfSelections">
+            <h2 class="round-header">Semifinais</h2>
+            <!-- Seleções de SF serão inseridas aqui -->
+        </div>
+        <div class="final-container" id="finalSelection">
+            <h2 class="round-header">Final</h2>
+            <!-- Seleção da Final será inserida aqui -->
+        </div>
+    </div>
+
+    <script>
+        const qfData = {
+            'QF1': ['arnaldo BR [1]', 'beto ARG [10]', 'carlos COL [30]', 'danilo US [16]'],
+            'QF2': ['eduardo BR [2]', 'fabio ARG [20]', 'gustavo COL [25]', 'hian US [8]'],
+            'QF3': ['igor BR [4]', 'jean ARG [7]', 'karl COL [12]', 'lucas US [15]'],
+            'QF4': ['marcos BR [6]', 'nelson ARG [9]', 'otavio COL [13]', 'patricio US [18]'],
+            'QF5': ['raul BR [3]', 'sergio ARG [14]', 'tiago COL [22]', 'victor US [11]'],
+            'QF6': ['wagner BR [5]', 'xavier ARG [17]', 'yuri COL [19]', 'zeca US [21]'],
+            'QF7': ['alan BR [8]', 'bruno ARG [23]', 'cesar COL [26]', 'david US [24]'],
+            'QF8': ['enzo BR [27]', 'felipe ARG [28]', 'gilberto COL [29]', 'henrique US [31]']
+        };
+
+        function populateQF() {
+            console.log('populateQF foi chamada'); // Adicione esta linha
+            Object.entries(qfData).forEach(([qf, players], index) => {
+                const label = document.createElement('label');
+                label.textContent = qf;
+                const select = document.createElement('select');
+                select.id = `select${index}`;
+                select.onchange = updateSF;
+                const defaultOption = document.createElement('option');
+                defaultOption.textContent = 'Selecione um jogador';
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                select.appendChild(defaultOption);
+                players.forEach(player => {
+                    const option = document.createElement('option');
+                    option.textContent = player;
+                    select.appendChild(option);
+                });
+                document.getElementById('qfSelections').appendChild(label);
+                document.getElementById('qfSelections').appendChild(select);
+
+                // Adicione estas linhas
+                select.addEventListener('change', updateSF);
+                console.log('Evento change adicionado a', select);
+            });
+        }
+
+        function updateSF() {
+            console.log('updateSF foi chamada'); // Adicione esta linha
+            const qfSelects = document.querySelectorAll('#qfSelections select');
+            const sfPlayers = Array.from(qfSelects).map(select => select.value);
+
+            const sfSelections = document.getElementById('sfSelections');
+            sfSelections.innerHTML = '';
+
+            for (let i = 0; i < sfPlayers.length; i += 2) {
+                const label = document.createElement('label');
+                label.textContent = `SF${(i/2)+1}`;
+                const select = document.createElement('select');
+                select.disabled = !(sfPlayers[i] && sfPlayers[i + 1]);
+                const defaultOption = document.createElement('option');
+                defaultOption.textContent = 'Selecione um jogador para a semifinal';
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                select.appendChild(defaultOption);
+
+                [sfPlayers[i], sfPlayers[i + 1]].forEach(player => {
+                    if (player && player !== 'Selecione um jogador') {
+                        const option = document.createElement('option');
+                        option.textContent = player;
+                        select.appendChild(option);
+                    }
+                });
+                sfSelections.appendChild(label);
+                sfSelections.appendChild(select);
+            }
+
+            // Adicione esta linha no final da função updateSF
+            document.getElementById('sfSelections').addEventListener('change', updateFinal);
+        }
+
+        function updateFinal() {
+            const sfSelects = document.querySelectorAll('#sfSelections select');
+            const finalPlayers = Array.from(sfSelects).filter(select => select.value !== 'Selecione um jogador para a semifinal').map(select => select.value);
+
+            const finalSelection = document.getElementById('finalSelection');
+            finalSelection.innerHTML = '';
+
+            if (finalPlayers.length === 2) {
+                const label = document.createElement('label');
+                label.textContent = 'F';
+                const select = document.createElement('select');
+                select.id = 'finalSelect';
+                select.onchange = declareWinner;
+                finalSelection.appendChild(label);
+                finalSelection.appendChild(select);
+
+                const defaultOption = document.createElement('option');
+                defaultOption.textContent = 'Selecione o campeão';
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                select.appendChild(defaultOption);
+
+                finalPlayers.forEach(player => {
+                    const option = document.createElement('option');
+                    option.textContent = player;
+                    option.value = player;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function declareWinner() {
+            const winnerSelect = document.getElementById('finalSelect');
+            const winner = winnerSelect.value;
+            if (winner !== 'Selecione o campeão') {
+                alert(`Parabéns ao campeão: ${winner}!`);
+            }
+        }
+
+        document.getElementById('sfSelections').addEventListener('change', updateFinal);
+        populateQF();
+    </script>
+</body>
+</html>
+

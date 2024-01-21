@@ -1,0 +1,298 @@
+// Teste para a função populateQFSelectors
+describe('populateQFSelectors', () => {
+    beforeEach(() => {
+        // Criação de elementos HTML simulados
+        const select1 = document.createElement('select');
+        select1.id = 'QF1';
+        const select2 = document.createElement('select');
+        select2.id = 'QF2';
+        const select3 = document.createElement('select');
+        select3.id = 'QF3';
+        const select4 = document.createElement('select');
+        select4.id = 'QF4';
+        const select5 = document.createElement('select');
+        select5.id = 'QF5';
+        const select6 = document.createElement('select');
+        select6.id = 'QF6';
+        const select7 = document.createElement('select');
+        select7.id = 'QF7';
+        const select8 = document.createElement('select');
+        select8.id = 'QF8';
+
+        // Adição dos elementos simulados ao documento
+        document.body.appendChild(select1);
+        document.body.appendChild(select2);
+        document.body.appendChild(select3);
+        document.body.appendChild(select4);
+        document.body.appendChild(select5);
+        document.body.appendChild(select6);
+        document.body.appendChild(select7);
+        document.body.appendChild(select8);
+    });
+
+    afterEach(() => {
+        // Remoção dos elementos simulados do documento
+        document.querySelector('#QF1').remove();
+        document.querySelector('#QF2').remove();
+        document.querySelector('#QF3').remove();
+        document.querySelector('#QF4').remove();
+        document.querySelector('#QF5').remove();
+        document.querySelector('#QF6').remove();
+        document.querySelector('#QF7').remove();
+        document.querySelector('#QF8').remove();
+    });
+
+    it('should populate the QF selectors with player options', () => {
+        // Dados simulados
+        const playersData = {
+            1: [
+                { name: 'Player 1', country: 'Country 1', ranking: 1 },
+                { name: 'Player 2', country: 'Country 2', ranking: 2 }
+            ],
+            2: [
+                { name: 'Player 3', country: 'Country 3', ranking: 3 },
+                { name: 'Player 4', country: 'Country 4', ranking: 4 }
+            ],
+            3: [
+                { name: 'Player 5', country: 'Country 5', ranking: 5 },
+                { name: 'Player 6', country: 'Country 6', ranking: 6 }
+            ],
+            4: [
+                { name: 'Player 7', country: 'Country 7', ranking: 7 },
+                { name: 'Player 8', country: 'Country 8', ranking: 8 }
+            ],
+            5: [
+                { name: 'Player 9', country: 'Country 9', ranking: 9 },
+                { name: 'Player 10', country: 'Country 10', ranking: 10 }
+            ],
+            6: [
+                { name: 'Player 11', country: 'Country 11', ranking: 11 },
+                { name: 'Player 12', country: 'Country 12', ranking: 12 }
+            ],
+            7: [
+                { name: 'Player 13', country: 'Country 13', ranking: 13 },
+                { name: 'Player 14', country: 'Country 14', ranking: 14 }
+            ],
+            8: [
+                { name: 'Player 15', country: 'Country 15', ranking: 15 },
+                { name: 'Player 16', country: 'Country 16', ranking: 16 }
+            ]
+        };
+
+        // Chamada da função a ser testada
+        populateQFSelectors();
+
+        // Verificação dos resultados
+        for (let qfNumber = 1; qfNumber <= 8; qfNumber++) {
+            const select = document.querySelector(`#QF${qfNumber} select`);
+            const options = select.querySelectorAll('option');
+
+            expect(options.length).toBe(2);
+
+            expect(options[0].textContent).toBe('Player 1 (Country 1) - Ranking 1');
+            expect(options[1].textContent).toBe('Player 2 (Country 2) - Ranking 2');
+        }
+    });
+});
+
+// Teste para a função populateSFSelectors
+describe('populateSFSelectors', () => {
+    beforeEach(() => {
+        // Criação de elementos HTML simulados
+        const selectSF1 = document.createElement('select');
+        selectSF1.id = 'SF1';
+        const selectSF2 = document.createElement('select');
+        selectSF2.id = 'SF2';
+        const selectSF3 = document.createElement('select');
+        selectSF3.id = 'SF3';
+        const selectSF4 = document.createElement('select');
+        selectSF4.id = 'SF4';
+
+        // Adição dos elementos simulados ao documento
+        document.body.appendChild(selectSF1);
+        document.body.appendChild(selectSF2);
+        document.body.appendChild(selectSF3);
+        document.body.appendChild(selectSF4);
+    });
+
+    afterEach(() => {
+        // Remoção dos elementos simulados do documento
+        document.querySelector('#SF1').remove();
+        document.querySelector('#SF2').remove();
+        document.querySelector('#SF3').remove();
+        document.querySelector('#SF4').remove();
+    });
+
+    it('should populate the SF selectors based on the selected QF players', () => {
+        // Dados simulados
+        const playersData = {
+            1: [
+                { name: 'Player 1', country: 'Country 1', ranking: 1 },
+                { name: 'Player 2', country: 'Country 2', ranking: 2 }
+            ],
+            2: [
+                { name: 'Player 3', country: 'Country 3', ranking: 3 },
+                { name: 'Player 4', country: 'Country 4', ranking: 4 }
+            ],
+            3: [
+                { name: 'Player 5', country: 'Country 5', ranking: 5 },
+                { name: 'Player 6', country: 'Country 6', ranking: 6 }
+            ],
+            4: [
+                { name: 'Player 7', country: 'Country 7', ranking: 7 },
+                { name: 'Player 8', country: 'Country 8', ranking: 8 }
+            ],
+            5: [
+                { name: 'Player 9', country: 'Country 9', ranking: 9 },
+                { name: 'Player 10', country: 'Country 10', ranking: 10 }
+            ],
+            6: [
+                { name: 'Player 11', country: 'Country 11', ranking: 11 },
+                { name: 'Player 12', country: 'Country 12', ranking: 12 }
+            ],
+            7: [
+                { name: 'Player 13', country: 'Country 13', ranking: 13 },
+                { name: 'Player 14', country: 'Country 14', ranking: 14 }
+            ],
+            8: [
+                { name: 'Player 15', country: 'Country 15', ranking: 15 },
+                { name: 'Player 16', country: 'Country 16', ranking: 16 }
+            ]
+        };
+
+        // Chamada da função a ser testada
+        populateSFSelectors();
+
+        // Verificação dos resultados
+        const sf1Select = document.querySelector('#SF1 select');
+        const sf2Select = document.querySelector('#SF2 select');
+        const sf3Select = document.querySelector('#SF3 select');
+        const sf4Select = document.querySelector('#SF4 select');
+
+        expect(sf1Select.options.length).toBe(2);
+        expect(sf2Select.options.length).toBe(2);
+        expect(sf3Select.options.length).toBe(2);
+        expect(sf4Select.options.length).toBe(2);
+
+        expect(sf1Select.options[0].textContent).toBe('Player 1 (Country 1) - Ranking 1');
+        expect(sf1Select.options[1].textContent).toBe('Player 2 (Country 2) - Ranking 2');
+
+        expect(sf2Select.options[0].textContent).toBe('Player 3 (Country 3) - Ranking 3');
+        expect(sf2Select.options[1].textContent).toBe('Player 4 (Country 4) - Ranking 4');
+
+        expect(sf3Select.options[0].textContent).toBe('Player 5 (Country 5) - Ranking 5');
+        expect(sf3Select.options[1].textContent).toBe('Player 6 (Country 6) - Ranking 6');
+
+        expect(sf4Select.options[0].textContent).toBe('Player 7 (Country 7) - Ranking 7');
+        expect(sf4Select.options[1].textContent).toBe('Player 8 (Country 8) - Ranking 8');
+    });
+});
+
+// Teste para a função populateFSelectors
+describe('populateFSelectors', () => {
+    beforeEach(() => {
+        // Criação de elementos HTML simulados
+        const selectF1 = document.createElement('select');
+        selectF1.id = 'F1';
+        const selectF2 = document.createElement('select');
+        selectF2.id = 'F2';
+
+        // Adição dos elementos simulados ao documento
+        document.body.appendChild(selectF1);
+        document.body.appendChild(selectF2);
+    });
+
+    afterEach(() => {
+        // Remoção dos elementos simulados do documento
+        document.querySelector('#F1').remove();
+        document.querySelector('#F2').remove();
+    });
+
+    it('should populate the F selectors based on the selected SF players', () => {
+        // Dados simulados
+        const playersData = {
+            1: [
+                { name: 'Player 1', country: 'Country 1', ranking: 1 },
+                { name: 'Player 2', country: 'Country 2', ranking: 2 }
+            ],
+            2: [
+                { name: 'Player 3', country: 'Country 3', ranking: 3 },
+                { name: 'Player 4', country: 'Country 4', ranking: 4 }
+            ],
+            3: [
+                { name: 'Player 5', country: 'Country 5', ranking: 5 },
+                { name: 'Player 6', country: 'Country 6', ranking: 6 }
+            ],
+            4: [
+                { name: 'Player 7', country: 'Country 7', ranking: 7 },
+                { name: 'Player 8', country: 'Country 8', ranking: 8 }
+            ]
+        };
+
+        // Chamada da função a ser testada
+        populateFSelectors();
+
+        // Verificação dos resultados
+        const f1Select = document.querySelector('#F1 select');
+        const f2Select = document.querySelector('#F2 select');
+
+        expect(f1Select.options.length).toBe(2);
+        expect(f2Select.options.length).toBe(2);
+
+        expect(f1Select.options[0].textContent).toBe('Player 1 (Country 1) - Ranking 1');
+        expect(f1Select.options[1].textContent).toBe('Player 2 (Country 2) - Ranking 2');
+
+        expect(f2Select.options[0].textContent).toBe('Player 3 (Country 3) - Ranking 3');
+        expect(f2Select.options[1].textContent).toBe('Player 4 (Country 4) - Ranking 4');
+    });
+});
+
+// Teste para a função populateChampionSelector
+describe('populateChampionSelector', () => {
+    beforeEach(() => {
+        // Criação de elementos HTML simulados
+        const selectChamp = document.createElement('select');
+        selectChamp.id = 'Champ';
+        const selectF1 = document.createElement('select');
+        selectF1.id = 'F1';
+        const selectF2 = document.createElement('select');
+        selectF2.id = 'F2';
+
+        // Adição dos elementos simulados ao documento
+        document.body.appendChild(selectChamp);
+        document.body.appendChild(selectF1);
+        document.body.appendChild(selectF2);
+    });
+
+    afterEach(() => {
+        // Remoção dos elementos simulados do documento
+        document.querySelector('#Champ').remove();
+        document.querySelector('#F1').remove();
+        document.querySelector('#F2').remove();
+    });
+
+    it('should populate the Champion selector based on the selected F players', () => {
+        // Dados simulados
+        const playersData = {
+            1: [
+                { name: 'Player 1', country: 'Country 1', ranking: 1 },
+                { name: 'Player 2', country: 'Country 2', ranking: 2 }
+            ],
+            2: [
+                { name: 'Player 3', country: 'Country 3', ranking: 3 },
+                { name: 'Player 4', country: 'Country 4', ranking: 4 }
+            ]
+        };
+
+        // Chamada da função a ser testada
+        populateChampionSelector();
+
+        // Verificação dos resultados
+        const champSelect = document.querySelector('#Champ select');
+
+        expect(champSelect.options.length).toBe(2);
+
+        expect(champSelect.options[0].textContent).toBe('Player 1 (Country 1) - Ranking 1');
+        expect(champSelect.options[1].textContent).toBe('Player 2 (Country 2) - Ranking 2');
+    });
+});
