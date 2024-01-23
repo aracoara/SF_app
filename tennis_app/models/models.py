@@ -1,5 +1,5 @@
 # models.py
-import enum
+from enum import Enum
 # Importar explicitamente o objeto db do módulo tennis_app
 from tennis_app import db
 
@@ -25,13 +25,11 @@ class Player(db.Model):
         # Método de representação do objeto para facilitar a depuração e o log
         return f'<Player {self.name}, Country: {self.country}, Ranking: {self.ranking},QF_number: {self.qf_number}>'
     
-# Definir um Enum para as rodadas do torneio
-class RoundType(enum.Enum):
+class RoundType(Enum):
     QF = 'QF'
     SF = 'SF'
     F = 'F'
 
-# Definir o modelo Game
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     round = db.Column(db.Enum(RoundType), nullable=False)
@@ -39,13 +37,14 @@ class Game(db.Model):
     player2_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
     winner_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=True)
 
-    # Relacionamentos
+    # Relacionamentos com Player (assumindo que a classe Player já está definida)
     player1 = db.relationship('Player', foreign_keys=[player1_id], backref='games_as_player1')
     player2 = db.relationship('Player', foreign_keys=[player2_id], backref='games_as_player2')
     winner = db.relationship('Player', foreign_keys=[winner_id], backref='won_games')
 
     def __repr__(self):
-        return f'<Game {self.id} - Round: {self.round.name}, Player 1: {self.player1_id}, Player 2: {self.player2_id}, Winner: {self.winner_id}>'    
+        round_name = self.round.name if isinstance(self.round, Enum) else self.round
+        return f'<Game {self.id} - Round: {round_name}, Player 1: {self.player1_id}, Player 2: {self.player2_id}, Winner: {self.winner_id}>' 
 
 class Picks(db.Model):
     id = db.Column(db.Integer, primary_key=True)

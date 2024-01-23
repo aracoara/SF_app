@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Australian Open 2024</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .column {
+            width: 300px;
+            margin: 0 30px; /* Espaço entre as colunas */
+            align-items: center; /* Centraliza os itens dentro da coluna */
+        }
+        .container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            min-height: 500px; /* Altura mínima para igualar os contêineres */
+            padding: 20px;
+            margin: 0 0px; /* Espaço entre os contêineres */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Espaça os jogos uniformemente */
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        /* Novos estilos para alinhamento */
+        .flex-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap; /* Permite que as colunas se ajustem conforme o espaço disponível */
+        }
+        .game {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px; /* Espaçamento entre os jogos */
+        }
+/* Se seus jogos da semifinal precisam de ajuste de margem específico, aplique aqui */
+        .semifinal-container .game {
+            margin-top: 150px; /* Ajuste este valor conforme necessário */
+            margin-bottom: 80px; /* Ajuste este valor conforme necessário */
+        }
+
+        .semifinal-game:first-of-type {
+            margin-top: 150px; /* Desnecessário se estiver usando justify-content: space-between; */
+        }*/
+        .game:last-of-type {
+            margin-bottom: 0; /* Remove a margem do último jogo */
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box; /* Inclui padding na largura total */
+        }
+        select:last-of-type {
+            margin-bottom: 0; /* Remove a margem do último select */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Quarterfinal</h2>
+        <div class="game">
+            <select name="game1player1">
+                <option value="djokovic">1 Djokovic [SRB]</option>
+            </select>
+            <select name="game1player2">
+                <option value="fritz">12 Fritz [US]</option>
+            </select>
+        </div>
+        <div class="game">
+            <select name="game2player1">
+                <option value="sinner">4 Sinner [ITA]</option>
+            </select>
+            <select name="game2player2">
+                <option value="rublev">5 Rublev [RUS]</option>
+            </select>
+        </div>
+        <div class="game">
+            <select name="game3player1">
+                <option value="hurkacz">9 Hurkacz [POL]</option>
+            </select>
+            <select name="game3player2">
+                <option value="medvedev">3 Medvedev [RUS]</option>
+            </select>
+        </div>
+        <div class="game">
+            <select name="game4player1">
+                <option value="zverev">6 Zverev [GER]</option>
+            </select>
+            <select name="game4player2">
+                <option value="alcaraz">2 Alcaraz [ESP]</option>
+            </select>        
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="container semifinal-container">
+            <h2>Semifinals</h2>
+            <div class="game semifinal-game">
+                <select name="sf_game1player1">
+                    <option value="djokovic">Djokovic</option>
+                </select>
+                <select name="sf_game1player2">
+                    <option value="sinner">Sinner</option>
+                </select>
+            </div>
+            <div class="game semifinal-game">
+                <select name="sf_game2player1">
+                    <option value="medvedev">Medvedev</option>
+                </select>
+                <select name="sf_game2player2">
+                    <option value="alcaraz">Alcaraz</option>
+                </select>        
+            </div>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="container">
+            <h2>Final</h2>
+            <div class="game">
+                <select name="final_game1player1">
+                    <option value="djokovic">Djokovic</option>
+                </select>
+                <select name="final_game1player2">
+                    <option value="alcaraz">Alcaraz</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+
+</body>
+</html>

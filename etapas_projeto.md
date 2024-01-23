@@ -4,8 +4,8 @@
 # Passo 1: Planejamento e Preparação
 
 - Compreender os Requisitos: 
-    - Desenvolver um web app que permite múltiplos usuários fazerem palpites nos vencedores de confrontos em um torneio de tênis. 
-    - Os palpites começam nas quartas de final.
+    - Desenvolver um web app que permite múltiplos usuários fazerem palpites (picks) para diversas rodadas em um torneio de tênis. 
+    - Os picks começam nas quartas de final.
     - Computação de Pontos: A seleção dos jogadores e pontuação começa a partir da quartas de final
     - Ranking de pontuação: Apresentação dos usuários e seus respectivos pontos em uma tabela classificatória.
 - Definir as Personas dos Usuários: Entusiastas de tênis e participantes em geral interessados em fazer palpites em resultados de torneios.
@@ -60,21 +60,41 @@
     - [X] Criar páginas básicas em HTML.
     - [ ] Adicionar estilos CSS.
     - [ ] Implementar funcionalidades básicas em JavaScript.
-- [ ] Rota POST para `submitPicks`:
-    - [ ] Receber o JSON `submitPicks` do frontend.
-    - [ ] Validar e processar os dados para gerar objetos `Game`.
-    - [ ] Salvar os objetos `Game` na base de dados.
+- [X] Rota POST para `submitPicks`:
+    - [X] Receber o JSON `submitPicks` do frontend.
+    - [X] Validar e processar os dados para gerar objetos `Game`.
+    - [X] Salvar os objetos `Game` na base de dados.
 - [ ] Criação da Classe `User`:
     - [ ] Representa um usuário no sistema.
-    - [ ] Atributos: `id`, `username`, e potencialmente `senha`.
-    - [ ] Relacionamento com a classe `Picks` para múltiplas escolhas.
-- [ ] Implementação da Lógica de `Picks`:
-    - [ ] Representar as escolhas (`picks`) de um usuário para um torneio.
-    - [ ] Associar `Picks` ao `User` correspondente.
-    - [ ] Lógica para atualizar ou criar novas `Picks`.
-- [ ] Atualização da Rota POST `submitPicks`:
-    - [ ] Associar as `Picks` ao `User` que as enviou.
-    - [ ] Possível implementação de autenticação e identificação do usuário.
+    - [ ] Adicionar campos como `id`, `username`, `email`, `password_hash`.
+    - [ ] Relacionamento com a classe `Picks`.
+    - [ ] Implementar métodos para representação e segurança (e.g., `__repr__`, `set_password`, `check_password`).
+- [ ] Sistema de Autenticação:
+    - [ ] Uso de Flask-Login para gerenciamento de sessões de usuário.
+    - [ ] Implementar funções `load_user` e `user_loader`.
+    - [ ] Uso de Flask-WTF para formulários seguros de login e registro.
+- [ ] Rotas de Autenticação:
+    - [ ] Rota de Registro de Usuários:
+  - [ ] Formulário de registro com validação.
+  - [ ] Hashing de senha antes de salvar no banco de dados.
+- [ ] Rota de Login de Usuários:
+  - [ ] Formulário de login com validação.
+  - [ ] Autenticação de usuário e início de sessão.
+- [ ] Rota de Logout:
+  - [ ] Encerramento da sessão do usuário.
+- [ ] Recuperação de Senha (Opcional):
+    - [ ] Implementar funcionalidade de redefinição de senha.
+    - [ ] Enviar e-mail com link de redefinição de senha.
+- [ ] Interface do Usuário:
+    - [ ] Páginas HTML para registro, login, e logout.
+    - [ ] Barra de navegação para acesso fácil a diferentes seções do aplicativo.
+    - [ ] Melhorias no front-end para suportar autenticação.
+- [ ] Segurança e Privacidade:
+    - [ ] Garantir que as senhas nunca sejam armazenadas em texto puro.
+    - [ ] Proteção contra vulnerabilidades comuns (e.g., CSRF).
+- [ ] Testes e Depuração:
+    - [ ] Escrever testes para validar o registro, login e logout.
+    - [ ] Testar a segurança e integridade da autenticação.
 - [ ] Cálculo de Pontos:
     - [ ] Criar função para calcular pontos com base nas `Picks` dos usuários e nos resultados reais dos jogos.
     - [ ] Implementar testes para garantir a correta atribuição de pontos.
@@ -86,6 +106,7 @@
     - [ ] Implementar interatividade para permitir que os usuários vejam como suas escolhas se comparam com os resultados reais e o desempenho de outros usuários.
 
 # Passo 7: Testes
+
     - [ ] Escrever testes unitários para as funções do back-end.
     - [ ] Testes de integração para as rotas do Flask.
     - [ ] Testes Unitários: Escreva testes para as funções individuais e modelos de dados.

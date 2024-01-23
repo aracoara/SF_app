@@ -2,130 +2,75 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Australian Open 2024</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans|Lato&display=swap" rel="stylesheet">
+    <title>Torneio de Tênis</title>
     <style>
-        body {
-            font-family: 'Open Sans', sans-serif;
-            color: #333333;
-            background-color: #ebeff5;
-            margin: 0;
-            padding: 20px;
+        .container {
             display: flex;
-            justify-content: center;
-        }
-        select {
-            font-family: 'Lato', sans-serif; /* Aplica a fonte Roboto aos selects */
-            color: #333333; /* Cor do texto dos selects */
-            background-color: #ebeff5; /* Cor de fundo para os selects */
-            border: 1px solid #ccc; /* Bordas sutis para os selects */
-            padding: 8px; /* Espaçamento interno para os selects */
-            border-radius: 4px; /* Bordas arredondadas para os selects */
-            box-sizing: border-box; /* Garante que padding e border façam parte da largura total */
-            font-weight: bold; /* Deixa o texto em negrito */
+            justify-content: space-around; /* Espaçamento uniforme entre as colunas */
+            align-items: flex-start; /* Alinha as colunas ao topo */
+            padding: 20px; /* Espaçamento ao redor do container */
         }
         .column {
-            width: 300px;
-            margin: 0 10px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* distribui uniformemente os jogos */
-            position: relative;
         }
-        .column h2 {
-            position: absolute; /* Posicionamento absoluto para manter no topo */
-            top: 0; /* Alinha no topo da coluna */
-            text-align: center; /* Centraliza o texto horizontalmente */
-            margin-top: 20px; /* Espaçamento no topo */
-            margin-bottom: 20px; /* Espaçamento abaixo do título */
-        }
-        .column::before {
-            content: ""; /* Pseudo-elemento para empurrar os jogos para baixo */
-            height: 70px; /* Altura igual à altura do título h2 mais margem */
-            display: block; /* Exibe como um bloco para ocupar espaço */
-        }
-        .game {
-            /* border: 1px solid #ccc; */
-            padding: 10px;
-            border-radius: 4px;
+        .cell {
+            min-width: 100px; /* Largura mínima para manter uma aparência consistente */
+            height: auto; /* Altura automática para se ajustar ao conteúdo */
+            border: 1px solid black;
             margin-bottom: 10px;
-            width: 100%;
-            
-            /* margin-bottom: 20px;  /* aumenta o espaço entre os jogos */
-            /* margin-bottom: 5px;  diminui o espaço entre os jogos */ 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px; /* Espaçamento interno para dar espaço ao redor do texto */
+            word-wrap: break-word; /* Quebra de texto para evitar overflow */
+}
+        .cell select {
+            width: 100%; /* Largura do dropdown para preencher a célula */
+            box-sizing: border-box; /* Inclui padding e borda na largura total */
         }
-        .game select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border: 3px solid #ccc;
-            box-sizing: border-box;
+        h2 {
+            margin-bottom: 15px; /* Espaçamento abaixo do título de cada coluna */
         }
-        .game:last-of-type {
-            margin-bottom: 0;
-        }
-        .champion {
-            margin-top: 0px;
-        }
-        #submitPicks {
-            font-family: 'Roboto', sans-serif; /* Ajuste para a fonte desejada */
-            font-size: 20px; /* Aumente o tamanho da fonte conforme desejado */
-            margin-top: 20px; /* Espaço entre o botão e a célula Champ */
-            border: 2px solid #333333; /* Nova borda para o botão */
-            padding: 10px 20px; /* Ajuste o preenchimento conforme necessário */
-            background-color: #ebeff5; /* Cor de fundo do botão */
-            color: #333333; /* Cor do texto do botão */
-            font-weight: bold; /* Texto em negrito */
-            border-radius: 4px; /* Bordas arredondadas para o botão */
-            cursor: pointer; /* Muda o cursor para indicar que o botão é clicável */
-        }
-
-        #submitPicks:hover {
-            background-color: #d1d8e0; /* Cor de fundo ao passar o mouse */
-        }
+        /* Estilos adicionais podem ser adicionados conforme necessário */
     </style>
 </head>
 <body>
-    <!-- <div class="container"> -->
+    <div class="container">
         <div class="column">
             <h2>Quarterfinals</h2>
             <!-- Adicionando atributo 'name' aos elementos select -->
-            <div class="game" id="QF1"><select name="QF1"></select></div>
-            <div class="game" id="QF2"><select name="QF2"></select></div>
-            <div class="game" id="QF3"><select name="QF3"></select></div>
-            <div class="game" id="QF4"><select name="QF4"></select></div>
-            <div class="game" id="QF5"><select name="QF5"></select></div>
-            <div class="game" id="QF6"><select name="QF6"></select></div>
-            <div class="game" id="QF7"><select name="QF7"></select></div>
-            <div class="game" id="QF8"><select name="QF8"></select></div>
+            <div class="cell" id="QF1"><select name="QF1"></select></div>
+            <div class="cell" id="QF2"><select name="QF2"></select></div>
+            <div class="cell" id="QF3"><select name="QF3"></select></div>
+            <div class="cell" id="QF4"><select name="QF4"></select></div>
+            <div class="cell" id="QF5"><select name="QF5"></select></div>
+            <div class="cell" id="QF6"><select name="QF6"></select></div>
+            <div class="cell" id="QF7"><select name="QF7"></select></div>
+            <div class="cell" id="QF8"><select name="QF8"></select></div>
         </div>
         <div class="column">
             <h2>Semifinal</h2>
             <!-- Adicionando atributo 'name' aos elementos select -->
-            <div class="game" id="SF1"><select name="SF1"></select></div>
-            <div class="game" id="SF2"><select name="SF2"></select></div>
-            <div class="game" id="SF3"><select name="SF3"></select></div>
-            <div class="game" id="SF4"><select name="SF4"></select></div>
+            <div class="cell" id="SF1"><select name="SF1"></select></div>
+            <div class="cell" id="SF2"><select name="SF2"></select></div>
+            <div class="cell" id="SF3"><select name="SF3"></select></div>
+            <div class="cell" id="SF4"><select name="SF4"></select></div>
         </div>
         <div class="column">
             <h2>Final</h2>
             <!-- Adicionando atributo 'name' aos elementos select -->
-            <div class="game" id="F1"><select name="F1"></select></div>
-            <div class="game" id="F2"><select name="F2"></select></div>
+            <div class="cell" id="F1"><select name="F1"></select></div>
+            <div class="cell" id="F2"><select name="F2"></select></div>
         </div>
         <!-- Coluna do Campeão, se necessário, pode ser adicionada aqui -->
         <div class="column">
             <h2>Champ</h2>
-            <div class="game" id="Champ"><select name="Champ"></select></div>
+            <div class="cell" id="Champ"><select name="Champ"></select></div>
             <button id="submitPicks">Submit Picks!</button>
         </div>
-    <!-- </div> -->
+    </div>
 
     <script>                          
         // Função para buscar os jogadores
@@ -399,25 +344,6 @@
                 console.error('Erro ao enviar:', error);
             });
         });
-
-        document.getElementById('submitPicks').addEventListener('click', function() {
-            // Verifica se a mensagem já foi adicionada
-            if (!document.getElementById('successMessage')) {
-                // Cria a mensagem somente se ela não existir
-                var messageDiv = document.createElement('div');
-                messageDiv.id = 'successMessage'; // Adiciona um ID à mensagem
-                messageDiv.textContent = "Picks submitted successfully!";
-                messageDiv.style.color = "#28a745"; // Cor verde para sucesso
-                messageDiv.style.marginTop = "20px"; // Espaço acima da mensagem
-                this.parentElement.appendChild(messageDiv); // Adiciona a mensagem após o botão
-            } else {
-                // Se a mensagem já existe, apenas atualiza o texto (opcional)
-                var messageDiv = document.getElementById('successMessage');
-                messageDiv.textContent = "Picks submitted successfully!";
-            }
-            alert("Picks submitted successfully!"); // Mostra uma mensagem simples
-        });
-
     </script>
 
 

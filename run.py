@@ -13,10 +13,12 @@ if __name__ == "__main__":
 
 # venv\Scripts\activate # Ativar ambiente virtual
 
-## comandos para subir alterações no git
+# # comandos para subir alterações no git
 # git status
 # git add .
 # git commit -m "Descrever o que foi feito"
+# git branch
+# git checkout -b feature/html
 # git push
 
 ## comando para definir a variável de ambiente FLASK_APP para indicar ao Flask qual é o arquivo de entrada da sua aplicação

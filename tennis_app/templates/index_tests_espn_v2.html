@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tournament Brackets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .column {
+            width: 300px;
+            margin: 0 10px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* distribui uniformemente os jogos */
+            position: relative;
+        }
+        .column h2 {
+            position: absolute; /* Posicionamento absoluto para manter no topo */
+            top: 0; /* Alinha no topo da coluna */
+            text-align: center; /* Centraliza o texto horizontalmente */
+            margin-top: 20px; /* Espaçamento no topo */
+            margin-bottom: 20px; /* Espaçamento abaixo do título */
+        }
+        .column::before {
+            content: ""; /* Pseudo-elemento para empurrar os jogos para baixo */
+            height: 70px; /* Altura igual à altura do título h2 mais margem */
+            display: block; /* Exibe como um bloco para ocupar espaço */
+        }
+        .game {
+            /* border: 1px solid #ccc; */
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            width: 100%;
+            
+            /* margin-bottom: 20px;  /* aumenta o espaço entre os jogos */
+            /* margin-bottom: 5px;  diminui o espaço entre os jogos */ 
+        }
+        .game select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 3px solid #ccc;
+            box-sizing: border-box;
+        }
+        .game:last-of-type {
+            margin-bottom: 0;
+        }
+        .champion {
+            margin-top: 0px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="column">
+    <h2>Quarterfinals</h2>
+    
+    <div class="game">
+        <div class="game">
+            <select name="game1player1">
+                <option value="djokovic">1 Djokovic [SRB]</option>
+            </select>
+            <select name="game1player2">
+                <option value="fritz">12 Fritz [US]</option>
+            </select>
+        </div>
+        <div class="game">
+            <select name="game2player1">
+                <option value="sinner">4 Sinner [ITA]</option>
+            </select>
+            <select name="game2player2">
+                <option value="rublev">5 Rublev [RUS]</option>
+            </select>
+        </div>
+        <div class="game">
+            <select name="game3player1">
+                <option value="hurkacz">9 Hurkacz [POL]</option>
+            </select>
+            <select name="game3player2">
+                <option value="medvedev">3 Medvedev [RUS]</option>
+            </select>
+        </div>
+        <div class="game">
+            <select name="game4player1">
+                <option value="zverev">6 Zverev [GER]</option>
+            </select>
+            <select name="game4player2">
+                <option value="alcaraz">2 Alcaraz [ESP]</option>
+            </select>        
+        </div>
+    </div>
+
+</div>
+
+<div class="column">
+    <h2>Semifinals</h2>
+    <div class="game">
+        <select name="sf_game1player1">
+            <option value="player1">Player 1</option>
+        </select>
+        <select name="sf_game1player2">
+            <option value="player2">Player 2</option>
+        </select>
+    </div>
+    <div class="game">
+        <select name="sf_game2player1">
+            <option value="player1">Player 1</option>
+        </select>
+        <select name="sf_game2player2">
+            <option value="player2">Player 2</option>
+        </select>
+    </div>
+</div>
+
+<div class="column">
+    <h2>Final</h2>
+    <div class="game">
+        <select name="final_game1player1">
+            <option value="player1">Player 1</option>
+        </select>
+        <select name="final_game1player2">
+            <option value="player2">Player 2</option>
+        </select>
+    </div>
+</div>
+
+<div class="column champion">
+    <h2>Champion</h2>
+    <div class="game">
+        <select name="champion_player">
+            <option value="champion">Champion</option>
+        </select>
+    </div>
+</div>
+
+</body>
+</html>
