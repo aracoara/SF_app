@@ -104,7 +104,7 @@
             font-weight: bold; /* Fonte mais marcante */
             color: #0044cc; /* Cor azul */
             text-decoration: none;
-            margin-top: 40px;
+            /* margin-top: 20px; */
             text-align: center;
         }
 
@@ -112,23 +112,10 @@
             color: #007BFF;
         }
 
-        /* @media (max-width: 1200px) {
-            .column {
-                flex: 0 0 calc(50% - 10px); 
-            }
-        }
-
-        @media (max-width: 600px) {
-            .column {
-                flex: 0 0 100%; 
-            }
-        } */
-
     </style>
 </head>
 <body>
-    <!-- <div class="grid-container">
-        <h1 class="grid-title">Tournament Bracket</h1> -->
+    <!-- <div class="container"> -->
         <div class="column">
             <h2>Quarterfinals</h2>
             <!-- Adicionando atributo 'name' aos elementos select -->
@@ -159,14 +146,10 @@
         <div class="column">
             <h2>Champ</h2>
             <div class="game" id="Champ"><select name="Champ"></select></div>
-
-        </div>
-        <div class="column">
-            <h2>Picks and Full Draw</h2>
             <button id="submitPicks">Submit Picks!</button>
             <a href="{{ url_for('static', filename='AO24_v2.pdf') }}" id="pdfLink">FULL DRAW</a>
+
         </div>
-    <!-- </div> -->
 
     <script>                          
         // Função para buscar os jogadores
