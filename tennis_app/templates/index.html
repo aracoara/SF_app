@@ -73,6 +73,15 @@
         .champion {
             margin-top: 0px;
         }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
         #submitPicks {
             font-family: 'Roboto', sans-serif; /* Ajuste para a fonte desejada */
             font-size: 20px; /* Aumente o tamanho da fonte conforme desejado */
@@ -112,17 +121,7 @@
             color: #007BFF;
         }
 
-        /* @media (max-width: 1200px) {
-            .column {
-                flex: 0 0 calc(50% - 10px); 
-            }
-        }
 
-        @media (max-width: 600px) {
-            .column {
-                flex: 0 0 100%; 
-            }
-        } */
 
     </style>
 </head>
@@ -163,7 +162,14 @@
         </div>
         <div class="column">
             <h2>Picks and Full Draw</h2>
-            <button id="submitPicks">Submit Picks!</button>
+            <!-- Campo para Username -->
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+
+            <!-- <button type="submit" class="btn btn-primary">Submit Picks</button> -->
+            <button id="submitPicks" type="submit" class="btn btn-primary">Submit Picks!</button>
             <a href="{{ url_for('static', filename='AO24_v2.pdf') }}" id="pdfLink">FULL DRAW</a>
         </div>
     <!-- </div> -->
@@ -381,9 +387,11 @@
     </script>
 
     <script>
+        // Adiciona um ouvinte de evento de clique ao botão com ID 'submitPicks'
         document.getElementById('submitPicks').addEventListener('click', function() {
-            console.log('Botão clicado'); // Confirmação do clique
+            console.log('Botão clicado'); // Confirmação de clique no botão
 
+            // Objeto torneio para armazenar os dados dos palpites
             let torneio = {
                 quartasFinal: {},
                 semiFinal: {},
@@ -391,75 +399,73 @@
                 campeao: null
             };
 
-            // Captura dos dados das Quartas de Final
+            // Laço para capturar dados das Quartas de Final
             for (let i = 1; i <= 8; i++) {
                 let select = document.querySelector(`#QF${i} select`);
                 torneio.quartasFinal[`QF${i}`] = select ? select.options[select.selectedIndex].value : null;
             }
 
-            // Captura dos dados das Semifinais
+            // Laço para capturar dados das Semifinais
             for (let i = 1; i <= 4; i++) {
                 let select = document.querySelector(`#SF${i} select`);
                 torneio.semiFinal[`SF${i}`] = select ? select.options[select.selectedIndex].value : null;
             }
 
-            // Captura dos dados das Finais
+            // Laço para capturar dados das Finais
             for (let i = 1; i <= 2; i++) {
                 let select = document.querySelector(`#F${i} select`);
                 torneio.final[`F${i}`] = select ? select.options[select.selectedIndex].value : null;
             }
 
-            // Captura do Campeão
+            // Captura do Campeão do torneio
             let champSelect = document.querySelector('#Champ select');
             torneio.campeao = champSelect ? champSelect.options[champSelect.selectedIndex].value : null;
 
-            // Verifica o objeto torneio antes da conversão
-            console.log('Objeto torneio:', torneio);
+            console.log('Objeto torneio:', torneio); // Log do objeto torneio
 
-            // Convertendo para JSON
+            // Captura do username do formulário e inclusão no objeto torneio
+            let username = document.getElementById('username').value;
+            torneio.username = username;
+
+            // Conversão do objeto torneio para JSON
             let json = JSON.stringify(torneio);
             console.log('JSON enviado:', json);
 
-            // Enviando o JSON para o servidor
+            // Enviando os dados do torneio para o servidor
             fetch('/submit_picks', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: json
-            }).then(response => {
+            })
+            .then(response => {
                 if (response.ok) {
-                    console.log("Palpites enviados com sucesso!");
+                    showMessage("Picks submitted successfully!"); // Exibe mensagem de sucesso
                     return response.json();
                 } else {
-                    throw new Error('Falha ao enviar palpites');
+                    throw new Error('Falha ao enviar palpites'); // Trata erros na resposta
                 }
-            }).then(data => {
-                console.log('Resposta do servidor:', data);
-            }).catch(error => {
-                console.error('Erro ao enviar:', error);
+            })
+            .catch(error => {
+                console.error('Erro ao enviar:', error); // Trata erros na requisição
             });
-        });
 
-        document.getElementById('submitPicks').addEventListener('click', function() {
-            // Verifica se a mensagem já foi adicionada
-            if (!document.getElementById('successMessage')) {
-                // Cria a mensagem somente se ela não existir
-                var messageDiv = document.createElement('div');
-                messageDiv.id = 'successMessage'; // Adiciona um ID à mensagem
-                messageDiv.textContent = "Picks submitted successfully!";
-                messageDiv.style.color = "#28a745"; // Cor verde para sucesso
-                messageDiv.style.marginTop = "20px"; // Espaço acima da mensagem
-                this.parentElement.appendChild(messageDiv); // Adiciona a mensagem após o botão
-            } else {
-                // Se a mensagem já existe, apenas atualiza o texto (opcional)
+            // Função para mostrar a mensagem de sucesso
+            function showMessage(text) {
                 var messageDiv = document.getElementById('successMessage');
-                messageDiv.textContent = "Picks submitted successfully!";
+                if (!messageDiv) {
+                    messageDiv = document.createElement('div');
+                    messageDiv.id = 'successMessage';
+                    messageDiv.style.color = "#28a745";
+                    messageDiv.style.marginTop = "20px";
+                    document.getElementById('submitPicks').parentElement.appendChild(messageDiv);
+                }
+                messageDiv.textContent = text;
             }
-            alert("Picks submitted successfully!"); // Mostra uma mensagem simples
         });
-
     </script>
+
 
 
 </body>

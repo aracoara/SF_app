@@ -46,10 +46,13 @@ class Game(db.Model):
         round_name = self.round.name if isinstance(self.round, Enum) else self.round
         return f'<Game {self.id} - Round: {round_name}, Player 1: {self.player1_id}, Player 2: {self.player2_id}, Winner: {self.winner_id}>' 
 
-class Picks(db.Model):
+class Pick(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    picks_data = db.Column(db.JSON)  # Armazena as escolhas no formato JSON
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+    pick_result = db.Column(db.Integer)  # Supondo que isto guarde o ID do vencedor previsto
+    player1_id = db.Column(db.Integer)  # ID do primeiro jogador
+    player2_id = db.Column(db.Integer)  # ID do segundo jogador    
 
     def __repr__(self):
         return f'<Picks {self.id} - User: {self.user_id}>'
@@ -58,12 +61,13 @@ class Picks(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    picks = db.relationship('Picks', backref='user', lazy='dynamic')
+    picks = db.relationship('Pick', backref='user', lazy='dynamic')  # Certifique-se de que o nome da classe está correto
 
     def __repr__(self):
         return f'<User {self.username}>'
 
 ## Para atualizar o banco de dados, execute os seguintes comandos no terminal:
 # $env:FLASK_APP = "D:\TENIS\SF_app\tennis_app"
-# flask db migrate -m "Descrever a migração"
+# flask --app tennis_app db init  
+# flask db migrate -m "Migração inicial"
 # flask db upgrade
