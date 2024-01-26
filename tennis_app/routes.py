@@ -34,26 +34,10 @@ def submit_picks():
             user = User(username=username)
             db.session.add(user)
             # Não faça commit aqui. Faremos isso mais tarde para garantir atomicidade.
-        
-        # if not user:
-        #     print("Criando novo usuário")
-        #     try:
-        #         new_user = User(username=username)
-        #         db.session.add(new_user)
-        #         db.session.commit()  # Salva o novo usuário no banco de dados
-        #         print("Novo usuário criado com sucesso:", new_user)
-        #     except Exception as e:
-        #         print("Erro ao criar novo usuário:", e)
-        #         return jsonify({'error': str(e)}), 500
-        
+            
         # Limpa todos os jogos existentes no banco de dados
         Game.query.delete()
-        # Processa os dados para criar os jogos
-        # qf_games = create_qf_games(data)
-        # sf_games = create_sf_games(data)
-        # final_games = create_final_game_and_champion(data)
 
-        # all_games = qf_games + sf_games + final_games
         all_games_data = create_qf_games(data) + create_sf_games(data) + create_final_game_and_champion(data)
         # print(all_games)
 
@@ -79,7 +63,8 @@ def submit_picks():
                     game_id=game.id, 
                     pick_result=game.winner_id,  # assumindo que esta é a previsão do usuário
                     player1_id=game.player1_id,  # assumindo que estas informações estão disponíveis no objeto game
-                    player2_id=game.player2_id
+                    player2_id=game.player2_id,
+                    round=game.round  # Supondo que você quer armazenar a rodada aqui
                 )
                 db
                 db.session.add(pick)

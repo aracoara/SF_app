@@ -52,10 +52,14 @@ class Pick(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
     pick_result = db.Column(db.Integer)  # Supondo que isto guarde o ID do vencedor previsto
     player1_id = db.Column(db.Integer)  # ID do primeiro jogador
-    player2_id = db.Column(db.Integer)  # ID do segundo jogador    
+    player2_id = db.Column(db.Integer)  # ID do segundo jogador
+    round = db.Column(db.Enum(RoundType))  # Supondo que RoundType seja um Enum válido
+
+    # Relacionamento com Game
+    game = db.relationship('Game', foreign_keys=[game_id], backref='picks')
 
     def __repr__(self):
-        return f'<Picks {self.id} - User: {self.user_id}>'
+        return f'<Pick {self.id} - User: {self.user_id}, Game: {self.game_id}, Round: {self.round}>'
 
     
 class User(db.Model):
