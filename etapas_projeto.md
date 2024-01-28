@@ -4,6 +4,12 @@
 ## Passo 1: Especificação do App
 
 - O aplicativo web "Palpites do Torneio de Tênis" é uma plataforma inovadora desenvolvida para hospedar um bolão de apostas em torneios de tênis, permitindo que múltiplos usuários façam previsões sobre os resultados das partidas. 
+- O torneio de 128 jogadores funciona da seguinte forma:
+    - Na primeira rodada, são realizados 64 jogos. Os vencedores avançam para a segunda rodada, onde há 32 jogos. 
+    - Na terceira rodada, restam 16 jogadores e 16 jogos. 
+    - A quarta rodada tem 8 jogos, levando às quartas de final com 4 jogos. 
+    - As semifinais contam com apenas 2 jogos, e a final decide o campeão. 
+    - Este é um torneio progressivo, onde os jogadores enfrentam eliminatórias até que apenas um permaneça como vencedor.
 - O aplicativo foca em três etapas-chave de um torneio de tênis: Quartas de Final (QF), Semifinais (SF) e Final (F). 
 - Em cada uma dessas etapas, os usuários devem submeter seus palpites, que consistem em um conjunto de sete escolhas para prever os vencedores de cada jogo - quatro jogos nas Quartas de Final, dois nas Semifinais e a grande final.
 - Durante o torneio, será calculada a pontuação dos usuários, iniciando a partir das Quartas de Final (QF). 
@@ -83,8 +89,8 @@
     - [X] Adicionar campos como `id`, `username`
     - [X] Relacionamento com a classe `Picks`.
 - [ ] Cálculo de Pontos:
-    - [ ] Criar função para calcular pontos com base nas `Picks` dos usuários e nos resultados reais dos jogos.
-    - [ ] Implementar testes para garantir a correta atribuição de pontos.
+    - [ ] Incluir rotina de atualização dos vencedores a cada rodada
+    - [ ] Criar função para calcular os pontos possíveis e ganhos com base reais dos jogos.
 - [ ] Exibição do Ranking:
     - [ ] Desenvolver lógica para ordenar usuários com base nos pontos calculados.
     - [ ] Criar rota e página para exibir o ranking dos usuários.

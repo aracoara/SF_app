@@ -1,10 +1,5 @@
-from tennis_app.models.models import Game
-import enum
-
-class RoundType(enum.Enum):
-    QF = 'QF'
-    SF = 'SF'
-    F = 'F'
+from tennis_app.models.models import RoundType
+# import enum
 
 
 def create_qf_games(data):
@@ -38,7 +33,6 @@ def create_qf_games(data):
         })
 
     return qf_games
-
 
 # Exemplo de uso
 # qf_games = create_qf_games(data)
@@ -74,8 +68,6 @@ def create_sf_games(data):
 
     return sf_games
 
-
-
 # Exemplo de uso
 # sf_games = create_sf_games(data)
 # print(sf_games)
@@ -103,20 +95,83 @@ def create_final_game_and_champion(data):
 
     return final_games
 
+
+# # Função auxiliar para mapear strings para enumerações
+# def map_round_type(round_str):
+#     if round_str == 'QF':
+#         return RoundType.QF
+#     elif round_str == 'SF':
+#         return RoundType.SF
+#     elif round_str == 'F':
+#         return RoundType.F
+#     else:
+#         raise ValueError("Rodada não reconhecida")
+
+# def create_games(data, round_str):
+#     """
+#     Cria jogos para uma rodada específica (QF, SF, F).
+#     :param data: Dados dos jogos.
+#     :param round_str: A rodada como string (QF, SF, F).
+#     """
+#     games = []
+#     next_round_mapping = {
+#         RoundType.QF: {RoundType.QF1: RoundType.SF, RoundType.QF2: RoundType.SF, RoundType.QF3: RoundType.SF, RoundType.QF4: RoundType.SF},
+#         RoundType.SF: {RoundType.SF1: RoundType.F, RoundType.SF2: RoundType.F}
+#     }
+
+
+#     # Use a função auxiliar para mapear a string da rodada para a enumeração
+#     round_enum = map_round_type(round_str)
+
+#     round_keys = sorted(data[round_str].keys())
+
+#     for i in range(0, len(round_keys), 2):
+#         key1 = round_keys[i]
+#         key2 = round_keys[i + 1]
+
+#         player1_id = data[round_str][key1]
+#         player2_id = data[round_str][key2]
+#         winner_id = None
+
+#         if round_enum != RoundType.F:
+#             winner_id = data[next_round_mapping[round_str][key1]]
+
+#         games.append({
+#             "round": round_enum,
+#             "player1_id": player1_id,
+#             "player2_id": player2_id,
+#             "winner_id": winner_id
+#         })
+
+#     return games
+
+
+
+# def create_final_game_and_champion(data):
+#     """
+#     Função para criar o jogo final e identificar o campeão.
+#     :param data: Dicionário com dados dos jogos.
+#     :return: Jogo final com o campeão.
+#     """
+#     player1_key = 'F1'
+#     player2_key = 'F2'
+#     player1_id = data["final"][player1_key]
+#     player2_id = data["final"][player2_key]
+#     champion_id = data["campeao"]
+
+#     final_game = {
+#         "round": RoundType.F,
+#         "player1_id": player1_id,
+#         "player2_id": player2_id,
+#         "winner_id": champion_id
+#     }
+
+#     return [final_game]
+
 # Exemplo de uso
+# data = {...}  # Dados do torneio
+# qf_games = create_games(data, RoundType.QF)
+# sf_games = create_games(data, RoundType.SF)
 # final_game = create_final_game_and_champion(data)
-# print(final_game)
 
-# picks_games= qf_games + sf_games + final_game
-# print(picks_games)
 
-# Criação de instâncias da classe Game
-# game_objects = []
-# for game_data in picks_games:
-#     game = Game(
-#         round=game_data['round'],
-#         player1_id=game_data['player1_id'],
-#         player2_id=game_data['player2_id'],
-#         winner_id=game_data['winner_id']
-#     )
-#     game_objects.append(game)
