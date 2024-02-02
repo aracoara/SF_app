@@ -3,15 +3,15 @@
 
 ## Passo 1: Especificação do App
 
-- O aplicativo web "Palpites do Torneio de Tênis" é uma plataforma inovadora desenvolvida para hospedar um bolão de apostas em torneios de tênis, permitindo que múltiplos usuários façam previsões sobre os resultados das partidas. 
+- O aplicativo web "Palpites do Torneio de Tênis" é uma plataforma inovadora desenvolvida para hospedar um bolão de apostas em torneios de tênis, permitindo que múltiplos usuários façam 15 palpites em um torneio de tenis. 
 - O torneio de 128 jogadores funciona da seguinte forma:
     - Na primeira rodada, são realizados 64 jogos. Os vencedores avançam para a segunda rodada, onde há 32 jogos. 
     - Na terceira rodada, restam 16 jogadores e 16 jogos. 
     - A quarta rodada tem 8 jogos, levando às quartas de final com 4 jogos. 
     - As semifinais contam com apenas 2 jogos, e a final decide o campeão. 
     - Este é um torneio progressivo, onde os jogadores enfrentam eliminatórias até que apenas um permaneça como vencedor.
-- O aplicativo foca em três etapas-chave de um torneio de tênis: Quartas de Final (QF), Semifinais (SF) e Final (F). 
-- Em cada uma dessas etapas, os usuários devem submeter seus palpites, que consistem em um conjunto de sete escolhas para prever os vencedores de cada jogo - quatro jogos nas Quartas de Final, dois nas Semifinais e a grande final.
+- O aplicativo foca em três etapas-chave de um torneio de tênis: Quartas de Final (QF), Semifinais (SF) e Final (F).
+    - Dessa forma, os usuários devem escolher 8 jogadores para as QF, 4 para a SF, 2 finalistas e 1 campeão
 - Durante o torneio, será calculada a pontuação dos usuários, iniciando a partir das Quartas de Final (QF). 
 - Após cada partida, haverá uma atualização do total de pontos possíveis para cada participante. 
 - O sistema de pontuação adotado é baseado em pesos atribuídos a cada fase do torneio: 1 ponto para as QF, 2 pontos para as Semifinais (SF), 3 pontos para a Final (F) e 4 pontos para acertar o campeão. 
@@ -43,7 +43,7 @@
 
 ## Passo 3: Design e Prototipagem
 
-- [ ] Esboçar as Telas: Crie wireframes para as páginas principais (Tela Chave do Torneio e Tela de Resultado).
+- [X] Esboçar as Telas: Crie wireframes para as páginas principais (Tela Chave do Torneio e Tela de Resultado).
 - [ ] Design de Interface: Desenvolva o design detalhado, incluindo esquema de cores, tipografia e elementos de UI.
 - [ ] Revisão e Ajustes: Valide o design com usuários potenciais e faça ajustes conforme necessário.
 
@@ -101,23 +101,17 @@
     - [ ] Uso de Flask-Login para gerenciamento de sessões de usuário.
     - [ ] Implementar funções `load_user` e `user_loader`.
     - [ ] Uso de Flask-WTF para formulários seguros de login e registro.
-- [ ] Rotas de Autenticação:
     - [ ] Rota de Registro de Usuários:
-  - [ ] Formulário de registro com validação.
-  - [ ] Hashing de senha antes de salvar no banco de dados.
-- [ ] Rota de Login de Usuários:
-  - [ ] Formulário de login com validação.
-  - [ ] Autenticação de usuário e início de sessão.
-- [ ] Rota de Logout:
-  - [ ] Encerramento da sessão do usuário.
-- [ ] Recuperação de Senha (Opcional):
+    - [ ] Formulário de registro com validação.
+    - [ ] Hashing de senha antes de salvar no banco de dados.
+    - [ ] Formulário de login com validação.
+    - [ ] Autenticação de usuário e início de sessão.
+    - [ ] Encerramento da sessão do usuário.
     - [ ] Implementar funcionalidade de redefinição de senha.
     - [ ] Enviar e-mail com link de redefinição de senha.
-- [ ] Interface do Usuário:
     - [ ] Páginas HTML para registro, login, e logout.
     - [ ] Barra de navegação para acesso fácil a diferentes seções do aplicativo.
     - [ ] Melhorias no front-end para suportar autenticação.
-- [ ] Segurança e Privacidade:
     - [ ] Garantir que as senhas nunca sejam armazenadas em texto puro.
     - [ ] Proteção contra vulnerabilidades comuns (e.g., CSRF).
 

@@ -3,6 +3,7 @@
 from tennis_app import app, db
 from tennis_app.models.models import Player
 
+
 # adicionar jogadores ao banco de dados
 app.app_context().push()
 with app.app_context():
