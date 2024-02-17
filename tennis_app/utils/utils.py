@@ -1,7 +1,10 @@
 from tennis_app import app
-from tennis_app.models.models import Pick, Player, RoundType
+from tennis_app.extensions import db
+from tennis_app.models.models import Pick, Player, RoundType, User
 import pandas as pd
 from sqlalchemy.orm import joinedload  # Para carregamento otimizado das relações
+from flask_mail import Message
+from tennis_app import mail
 
 
 # Função para criar jogos de QF
@@ -104,12 +107,6 @@ def create_final_game_and_champion(data):
 def process_results_data(file_path):
     # Lendo e processando o arquivo CSV
     df = pd.read_csv(file_path, encoding='ISO-8859-1', header=None, names=['result'])
-    # # como pegar o campo abaixo e transformar em inteiro?
-    # # df['qf_number'] = pd.to_numeric(df['qf_number'], errors='coerce')
-    # df['name'] = df['result'].str.extract(r'^(.*?)\s+\(')
-    # df['country'] = df['result'].str.extract(r'\((.*?)\)')
-    # df['ranking'] = df['result'].str.extract(r'\[(\d+)\]')
-
     with app.app_context():
         # Criar um dicionário para mapear nomes de jogadores para seus IDs
         player_id_map = {player.name: player.id for player in Player.query.all()}
@@ -248,14 +245,33 @@ def calcular_eliminados(df_picks_por_usuario, atualizacoes):
 
 
 # Método para determinar os picks válidos dos usuários
-def picks_valid(picks_user_df, df_eliminados):
-    # Obter os IDs dos jogadores eliminados
-    jogadores_eliminados = set(df_eliminados['Jogador'])
+def picks_valid(picks_user_df, df_eliminados, atualizacoes):
+    # Criando um dicionário para mapear as rodadas a um valor numérico representando a ordem
+    ordem_rodadas = {rodada: indice for indice, (rodada, _) in enumerate(atualizacoes)}
+    
+    valid_picks = []  # Lista para coletar os dados dos palpites válidos
 
-    # Filtrar os palpites válidos
-    df_picks_valid = picks_user_df[~picks_user_df['Jogador'].isin(jogadores_eliminados)]
+    for index, row in picks_user_df.iterrows():
+        user_id = row['User_ID']
+        jogador = row['Jogador']
+        rodada_palpite = row['Rodada']
 
+        # Verificar a rodada de eliminação do jogador
+        elim_row = df_eliminados[(df_eliminados['User_ID'] == user_id) & (df_eliminados['Jogador'] == jogador)]
+        if not elim_row.empty:
+            rodada_eliminacao = elim_row['Rodada_Eliminacao'].values[0]
+            
+            # Usando o mapeamento para comparar a ordem das rodadas
+            if ordem_rodadas.get(rodada_palpite, float('inf')) <= ordem_rodadas.get(rodada_eliminacao, float('inf')):
+                valid_picks.append(row.to_dict())  # Adiciona o palpite à lista como um dicionário
+        else:
+            valid_picks.append(row.to_dict())
+
+    df_picks_valid = pd.DataFrame(valid_picks)
     return df_picks_valid
+
+
+
 
 def calcular_pontos_possiveis(df_picks_valid, pesos):
     """
@@ -266,13 +282,16 @@ def calcular_pontos_possiveis(df_picks_valid, pesos):
     - pesos (dict): Dicionário com os pesos atribuídos para cada rodada.
 
     Retorna:
-    - pontos_possiveis_por_usuario (Series): Pontos possíveis para cada usuário.
+    - pontos_possiveis_df (DataFrame): DataFrame com User_ID e os pontos possíveis para cada usuário.
     """
     pontos_possiveis_por_usuario = df_picks_valid.groupby('User_ID')['Rodada'].apply(
         lambda rodadas: sum(pesos[rodada] for rodada in rodadas)
     )
+
+    # Transformando a série em um DataFrame e resetando o índice
+    pontos_possiveis_df = pontos_possiveis_por_usuario.reset_index(name='Pontos_Possiveis')
     
-    return pontos_possiveis_por_usuario
+    return pontos_possiveis_df
 
 def calcular_pontos_ganhos(df_picks_valid, atualizacoes, pesos):
     """
@@ -338,3 +357,129 @@ def get_player_ids():
         player_ids = [player.id for player in Player.query.with_entities(Player.id).all()]
 
         return player_ids
+    
+# Método para obter os dados dos usuários
+def get_user_data():
+    with app.app_context():
+        # Dentro deste bloco, você está no contexto da aplicação
+        # Agora você pode realizar consultas ao banco de dados
+        user_data = [
+            {
+                "user_id": user.id,  # Ajuste feito aqui
+                "username": user.username,
+            }
+            for user in User.query.all()
+        ]
+
+        # Aqui não é mais necessário especificar as colunas, pois os dicionários já têm as chaves corretas
+        df_user_data = pd.DataFrame(user_data)
+
+        return df_user_data
+
+# Método para obter os picks processados    
+def get_and_process_picks():
+    with app.app_context():
+        # Inicia a sessão do SQLAlchemy
+        session = db.session
+
+        users = User.query.all()
+        processed_picks_list = []
+
+        for user in users:
+            user_picks_dict = {
+                'User': user.username,
+                'QF1': None, 'QF2': None, 'QF3': None, 'QF4': None,
+                'QF5': None, 'QF6': None, 'QF7': None, 'QF8': None,
+                'SF1': None, 'SF2': None, 'SF3': None, 'SF4': None,
+                'F1': None, 'F2': None, 'Champion': None
+            }
+
+            for pick in user.picks:
+                # Busca os nomes dos jogadores a partir dos IDs usando a sessão do SQLAlchemy
+                player1 = session.get(Player, pick.player1_id) if pick.player1_id else None
+                player2 = session.get(Player, pick.player2_id) if pick.player2_id else None
+                winner = session.get(Player, pick.winner_id) if pick.winner_id else None
+                
+                round_key = pick.round.name if hasattr(pick.round, 'name') else str(pick.round)
+                # Mapeia os nomes dos jogadores para as fases correspondentes
+                if round_key.startswith('QF'):
+                    user_picks_dict[f'QF{2*(pick.game_id-1)+1}'] = player1.name if player1 else None
+                    user_picks_dict[f'QF{2*(pick.game_id-1)+2}'] = player2.name if player2 else None
+                elif round_key.startswith('SF'):
+                    # Corrige o mapeamento para SF1 e SF2 baseando-se no game_id 5
+                    if pick.game_id == 5:
+                        user_picks_dict['SF1'] = player1.name if player1 else None
+                        user_picks_dict['SF2'] = player2.name if player2 else None
+                    # Corrige o mapeamento para SF3 e SF4 baseando-se no game_id 6
+                    elif pick.game_id == 6:
+                        user_picks_dict['SF3'] = player1.name if player1 else None
+                        user_picks_dict['SF4'] = player2.name if player2 else None
+                elif round_key == 'F' and pick.game_id == 7:
+                    user_picks_dict['F1'] = player1.name if player1 else None
+                    user_picks_dict['F2'] = player2.name if player2 else None
+                    user_picks_dict['Champion'] = winner.name if winner else None
+
+            processed_picks_list.append(user_picks_dict)
+        
+        return pd.DataFrame(processed_picks_list)
+
+# Método para mapear IDs de jogadores para nomes
+def map_ids_to_names(player_ids):
+    with app.app_context():
+        # Inicia a sessão do SQLAlchemy
+        session = db.session
+        # Busca os jogadores e mapeia seus IDs para nomes
+        players = session.query(Player).filter(Player.id.in_(player_ids)).all()
+        id_to_name = {player.id: player.name for player in players}
+        return id_to_name
+
+# Método para obter os jogadores classificados
+def get_classified_players(classificados_QF, classificados_SF, classificados_F, Champion):
+    
+    # Mapeia os IDs para nomes usando a função auxiliar
+    id_to_name = map_ids_to_names(classificados_QF.union(classificados_SF, classificados_F, Champion))
+
+    # Cria listas de nomes dos jogadores para cada fase
+    classified_players = []
+    for player_id in classificados_QF:
+        classified_players.append({'name': id_to_name.get(player_id), 'round': 'QF'})
+    for player_id in classificados_SF:
+        classified_players.append({'name': id_to_name.get(player_id), 'round': 'SF'})
+    for player_id in classificados_F:
+        classified_players.append({'name': id_to_name.get(player_id), 'round': 'F'})
+    for player_id in Champion:
+        classified_players.append({'name': id_to_name.get(player_id), 'round': 'Champion'})
+
+    return classified_players
+
+# Método para processar os dados de resultados com posição
+def process_results_data_position(file_path):
+    # Lendo o arquivo CSV
+    df = pd.read_csv(file_path, encoding='ISO-8859-1', skiprows=1, names=['Position', 'Player'])
+
+    with app.app_context():
+        # Criar um dicionário para mapear nomes de jogadores para seus IDs
+        player_id_map = {player.name: player.id for player in Player.query.all()}
+
+        # Assegura que a coluna 'Player' é tratada como string
+        df['Player'] = df['Player'].astype(str)
+
+        # Extrair o nome do jogador da coluna 'Player' e mapear para player_id
+        # O uso de [0] após o .extract() seleciona a primeira coluna do resultado, que contém os nomes extraídos
+        df['player_id'] = df['Player'].str.extract(r'^(.*?)\s+\(')[0].map(player_id_map)
+
+        # Removendo linhas com valores NaN em 'player_id'
+        df.dropna(subset=['player_id'], inplace=True)
+
+        # Convertendo 'player_id' para int, tratando erros
+        df['player_id'] = pd.to_numeric(df['player_id'], downcast='integer', errors='coerce')
+
+    # Retorna o DataFrame ajustado
+    return df[['Position', 'player_id']]
+
+
+
+def send_email(subject, recipient, template):
+    msg = Message(subject, recipients=[recipient])
+    msg.body = template
+    mail.send(msg)

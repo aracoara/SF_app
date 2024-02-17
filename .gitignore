@@ -2,4 +2,18 @@ venv/
 __pycache__/
 *.pyc
 .DS_Store  # Se estiver usando MacOS
-venv2/
+PicksOverview_teste.py
+df_eliminados.csv
+df_final.csv
+df_picks_user.csv
+df_picks_valid.csv
+df_pontuacao_final.csv
+"migrations/versions/a459ce61c186_migra\303\247\303\243o_inicial.py"
+pontos_ganhos_por_usuario.csv
+pontos_possiveis_por_usuario.csv
+tennis_app/assets/Champion-ao24_v2.csv
+tennis_app/assets/F-ao24_v2.csv
+tennis_app/assets/QF-ao24_v2.csv
+tennis_app/assets/SF-ao24_v2.csv
+tennis_app/forms.py
+tennis_app/tests/tests_routes.py

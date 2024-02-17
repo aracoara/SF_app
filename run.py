@@ -11,7 +11,7 @@ app.run(debug=True)
 if __name__ == "__main__":
     app.run(debug=True)
 
-# venv\Scripts\activate # Ativar ambiente virtual
+# venv2\Scripts\activate # Ativar ambiente virtual
 
 # # comandos para subir alterações no git
 # git status
@@ -22,7 +22,9 @@ if __name__ == "__main__":
 # git push --set-upstream origin novo_frontend
 
 ## comando para definir a variável de ambiente FLASK_APP para indicar ao Flask qual é o arquivo de entrada da sua aplicação
+# flask db heads
 # $env:FLASK_APP = "D:\TENIS\SF_app\tennis_app"
+# flask db init
 # flask db migrate -m "Add qf_number to Player"
 # flask db upgrade
 

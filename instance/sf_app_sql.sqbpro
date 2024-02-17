@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="D:/TENIS/SF_app/instance/sf_app.db" readonly="0" foreign_keys="" case_sensitive_like="" temp_store="" wal_autocheckpoint="" synchronous=""/><attached/><window><main_tabs open="structure browser pragmas query" current="1"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1991"/><column_width id="4" width="0"/></tab_structure><tab_browse><current_table name="0,0:"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">UPDATE user SET email = 'user_' || id || '@example.com';
+</sql><sql name="SQL 2">ALTER TABLE player RENAME TO players;
+ALTER TABLE game RENAME TO games;
+ALTER TABLE pick RENAME TO pikcs;
+ALTER TABLE user RENAME TO users;</sql><sql name="SQL 3">ALTER TABLE users ADD COLUMN email TEXT NOT NULL DEFAULT 'temp@example.com';
+ALTER TABLE users ADD COLUMN password_hash TEXT;
+
+</sql><sql name="SQL 4">UPDATE users SET email = '';
+</sql><sql name="SQL 5">DROP TABLE alembic_version;
+
+</sql><sql name="SQL 6">UPDATE alembic_version SET version_num = 'a459ce61c186' WHERE version_num = 'dca65694f2ca';
+</sql><sql name="SQL 7">SELECT * FROM alembic_version;
+</sql><sql name="SQL 8">ALTER TABLE pikcs RENAME TO picks;
+</sql><current_tab id="7"/></tab_sql></sqlb_project>
